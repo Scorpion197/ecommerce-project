@@ -46,6 +46,7 @@ class UserAccountManager(BaseUserManager):
 
 
 class UserAccount(AbstractBaseUser, PermissionsMixin):
+    username = models.CharField(max_length=30, default="")
     email = models.EmailField(max_length=100, unique=True)
     first_name = models.CharField(max_length=100, blank=True, null=True, default="")
     family_name = models.CharField(max_length=100, blank=True, null=True, default="")
