@@ -26,8 +26,8 @@ SECRET_KEY = "django-insecure-ts67(io#+fprsu0@5+i697+d-j!%xyur84#@%cq@m4r4klz+h^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["*"]
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "ecommerce_app",
     "rest_framework.authtoken",
     "dj_rest_auth",
+    "dj_rest_auth.registration",
     "rest_framework_swagger",
     "django_filters",
     "corsheaders",
@@ -52,28 +53,35 @@ INSTALLED_APPS = [
 ]
 SITE_ID = 1
 AUTH_USER_MODEL = "ecommerce_app.UserAccount"
-CORS_ALLOW_ALL_ORIGINS = True
 REST_AUTH_REGISTER_SERIALIZERS = {
     "REGISTER_SERIALIZER": "ecommerce_app.serializers.CustomRegisterSerializer",
 }
+REST_AUTH_SERIALIZERS = {
+    "LOGIN_SERIALIZER": "ecommerce_app.serializers.CustomLoginSerializer",
+    "USER_DETAILS_SERIALIZER": "ecommerce_app.serializers.CustomUserDetailSerializer",
+}
+
 AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
+
 ACCOUNT_ADAPTER = "ecommerce_app.adapter.CustomAccountAdapter"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_HOST_USER = "doudou.gaw@gmail.com"
-EMAIL_HOST_PASSWORD = "liyobghmbjenxhww"
+EMAIL_HOST_PASSWORD = "lgqdigcvizesirpo"
 EMAIL_PORT = 587
+LOGIN_URL = "https://localhost:8000/login/"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -123,8 +131,8 @@ DATABASES = {
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
@@ -174,6 +182,4 @@ MEDIA_URL = "/media/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-ALLOWED_HOSTS = ["*"]
-CORS_ORIGIN_ALLOW_ALL = True
 # superuser: doudou.gaw@gmail.com | scorpion197
