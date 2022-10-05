@@ -1,8 +1,16 @@
-from dj_rest_auth.registration.serializers import RegisterSerializer
+from dj_rest_auth.registration.serializers import (
+    RegisterSerializer,
+    VerifyEmailSerializer,
+)
 from dj_rest_auth.serializers import LoginSerializer, UserDetailsSerializer
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from .models import *
+
+
+class CustomVerifyEmailSerializer(VerifyEmailSerializer):
+    def get_email_options(self):
+        return {"html_email_template_name": "email_confirmation/confirm.html"}
 
 
 class CustomRegisterSerializer(RegisterSerializer):
@@ -25,7 +33,7 @@ class CustomRegisterSerializer(RegisterSerializer):
             "input_type": "password",
         },
     )
-    is_active = serializers.BooleanField(default=False, allow_null=True)
+    is_active = serializers.BooleanField(default=True, allow_null=True)
 
     def get_cleaned_data(self):
         data_dict = super().get_cleaned_data()
@@ -34,6 +42,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         data_dict["family_name"] = self.validated_data.get("family_name", "")
         data_dict["user_type"] = self.validated_data.get("user_type", "")
         data_dict["email"] = self.validated_data.get("email", "")
+        data_dict["is_active"] = self.validated_data.get("is_active", True)
         return data_dict
 
     def save(self, request):
@@ -53,7 +62,6 @@ class CustomLoginSerializer(LoginSerializer):
 
     def authenticate(self, **kwargs):
         user = authenticate(self.context["request"], **kwargs)
-        print("USER password: ", user.password)
         return user
 
 

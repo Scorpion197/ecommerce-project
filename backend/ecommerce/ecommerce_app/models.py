@@ -50,7 +50,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=100, unique=True)
     first_name = models.CharField(max_length=100, blank=True, null=True, default="")
     family_name = models.CharField(max_length=100, blank=True, null=True, default="")
-    is_active = models.BooleanField(default=False, null=True, blank=True)
+    is_active = models.BooleanField(default=True, null=True, blank=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     user_type = models.CharField(
