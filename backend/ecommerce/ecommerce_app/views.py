@@ -1,22 +1,22 @@
-from curses.ascii import HT
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.core.mail import send_mail
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-
+from django import views
+from pyparsing import Or
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from .models import *
+from .serializers import *
 
 # Create your views here.
 
 
-def home(request):
-    html = "<h1>hello from app </h1>"
-    send_mail(
-        "Web developer internship",
-        "opportunity",
-        "doudou.gaw@gmail.com",
-        ["kamelgaouaoui197@gmail.com"],
-    )
+class ProductsViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated]
 
-    return HttpResponse(html)
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]

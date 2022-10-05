@@ -1,3 +1,4 @@
+from ast import ListComp
 from django.urls import path, re_path, include
 from dj_rest_auth.registration.views import (
     RegisterView,
@@ -5,10 +6,31 @@ from dj_rest_auth.registration.views import (
     ConfirmEmailView,
 )
 from dj_rest_auth.views import LogoutView, LoginView
+from rest_framework import routers
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 from .views import *
 
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Backend API",
+        default_version="v1",
+        description="Ecommerce web application",
+        contact=openapi.Contact("doudou.gaw@gmail.com"),
+        license=openapi.License(name="BSD license"),
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
+)
+
+# Store routes
+router = routers.DefaultRouter()
+router.register("products", ProductsViewSet, basename="manage_products")
+router.register("orders", OrderViewSet, basename="manage_orders")
+
+# Auth routes
 urlpatterns = [
-    path("", home, name="home_page"),
     path("register/", RegisterView.as_view()),
     path(
         "account-confirm-email/",
@@ -25,4 +47,19 @@ urlpatterns = [
     path("login/", LoginView.as_view()),
     path("logout/", LogoutView.as_view()),
     path("verify-email/", VerifyEmailView.as_view(), name="rest_verify_email"),
+    re_path(
+        r"^swagger(?P<format>\.json|\.yaml)$",
+        schema_view.without_ui(cache_timeout=0),
+        name="schema-json",
+    ),
+    re_path(
+        r"^swagger/$",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    re_path(
+        r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
+    ),
 ]
+
+urlpatterns += router.urls

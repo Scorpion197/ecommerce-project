@@ -74,3 +74,22 @@ class CustomUserDetailSerializer(UserDetailsSerializer):
     class Meta:
         model = UserAccount
         fields = ["id", "first_name", "family_name", "email", "user_type", "is_active"]
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ["id", "name", "price", "size", "color", "image"]
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = [
+            "id",
+            "created_at",
+            "status",
+            "payment_validated",
+            "user_id",
+            "product_id",
+        ]
