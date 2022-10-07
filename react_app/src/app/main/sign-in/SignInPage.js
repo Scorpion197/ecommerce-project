@@ -6,8 +6,8 @@ import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import * as yup from "yup";
 import _ from "@lodash";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
@@ -47,6 +47,7 @@ function SignInPage() {
 
   const { isValid, dirtyFields, errors } = formState;
   const [redirect, setRedirect] = useState(false);
+  const navigate = useNavigate();
 
   function onSubmit(props) {
     const endpoint = "http://localhost:8000/login/";
@@ -63,7 +64,7 @@ function SignInPage() {
   }
 
   useEffect(() => {
-    if (redirect) return redirect("/dashboards/analytics");
+    if (redirect) return navigate("/dashboards/analytics");
   }, [redirect]);
 
   return (
