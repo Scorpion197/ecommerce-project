@@ -45,28 +45,21 @@ const App = () => {
   return (
     <CacheProvider value={createCache(emotionCacheOptions[langDirection])}>
       <FuseTheme theme={mainTheme} direction={langDirection}>
-        <AuthProvider>
-          <BrowserRouter>
-            <FuseAuthorization
-              userRole={user.role}
-              loginRedirectUrl={settingsConfig.loginRedirectUrl}
-            >
-              <SnackbarProvider
-                maxSnack={5}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "right",
-                }}
-                classes={{
-                  containerRoot:
-                    "bottom-0 right-0 mb-52 md:mb-68 mr-8 lg:mr-80 z-99",
-                }}
-              >
-                <FuseLayout layouts={themeLayouts} />
-              </SnackbarProvider>
-            </FuseAuthorization>
-          </BrowserRouter>
-        </AuthProvider>
+        <BrowserRouter>
+          <SnackbarProvider
+            maxSnack={5}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            classes={{
+              containerRoot:
+                "bottom-0 right-0 mb-52 md:mb-68 mr-8 lg:mr-80 z-99",
+            }}
+          >
+            <FuseLayout layouts={themeLayouts} />
+          </SnackbarProvider>
+        </BrowserRouter>
       </FuseTheme>
     </CacheProvider>
   );

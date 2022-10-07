@@ -15,7 +15,7 @@ import AvatarGroup from "@mui/material/AvatarGroup";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import axios from "axios";
+import jwtService from "../../auth/services/jwtService";
 
 /**
  * Form Validation Schema
@@ -50,16 +50,18 @@ function SignInPage() {
   const navigate = useNavigate();
 
   function onSubmit(props) {
-    const endpoint = "http://localhost:8000/login/";
-    const data = { email: props?.email, password: props?.password };
-    axios
-      .post(endpoint, data)
-      .then((res) => {
-        localStorage.setItem("token", res?.data?.key);
+    jwtService
+      .signInWithEmailAndPassword(props?.email, props?.password)
+      .then((user) => {
         setRedirect(true);
       })
-      .catch((err) => {
-        console.log("Error while signin: ", err);
+      .catch((_errors) => {
+        _errors.forEach((error) => {
+          setError(error.type, {
+            type: "manual",
+            message: error.message,
+          });
+        });
       });
   }
 
