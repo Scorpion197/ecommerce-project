@@ -6,6 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import Alert from "@mui/material/Alert";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import * as yup from "yup";
@@ -15,8 +16,7 @@ import AvatarGroup from "@mui/material/AvatarGroup";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import jwtService from "../../auth/services/jwtService";
-
+import axios from "axios";
 /**
  * Form Validation Schema
  */
@@ -47,21 +47,22 @@ function SignInPage() {
 
   const { isValid, dirtyFields, errors } = formState;
   const [redirect, setRedirect] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate();
 
   function onSubmit(props) {
-    jwtService
-      .signInWithEmailAndPassword(props?.email, props?.password)
-      .then((user) => {
+    const endpoint = "http://localhost:8000/login/";
+    const data = { email: props?.email, password: props?.password };
+
+    axios
+      .post(endpoint, data)
+      .then((res) => {
+        localStorage.setItem("token", res?.data?.key);
         setRedirect(true);
       })
-      .catch((_errors) => {
-        _errors.forEach((error) => {
-          setError(error.type, {
-            type: "manual",
-            message: error.message,
-          });
-        });
+      .catch((err) => {
+        console.log("Error while sign in: ", err);
+        setShowAlert(true);
       });
   }
 
@@ -127,7 +128,13 @@ function SignInPage() {
                 />
               )}
             />
-
+            {showAlert == true ? (
+              <Alert severity="error" variant="filled">
+                Invalid credentials !
+              </Alert>
+            ) : (
+              <div></div>
+            )}
             <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between">
               <Controller
                 name="remember"

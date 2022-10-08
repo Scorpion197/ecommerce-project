@@ -75,7 +75,7 @@ class JwtService extends FuseUtils.EventEmitter {
           resolve(response.data.user);
           this.emit("onLogin", response?.data?.key);
         } else {
-          reject(response.data.error);
+          console.log("Error while sign in in jwtService");
         }
       });
     });
