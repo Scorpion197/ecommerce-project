@@ -74,6 +74,7 @@ function SignUpPage() {
 
   const handleClose = () => {
     setOpen(false);
+    setRedirectToLogin(true);
   };
 
   const handleRedirectToLogin = (event) => {
@@ -179,7 +180,7 @@ function SignUpPage() {
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleClose}>Resend email</Button>
+                <Button onClick={handleClose}>Close</Button>
                 <Button onClick={handleRedirectToLogin} autoFocus>
                   Login
                 </Button>
