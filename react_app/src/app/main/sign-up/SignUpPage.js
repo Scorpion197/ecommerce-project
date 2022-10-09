@@ -1,71 +1,126 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, useForm } from 'react-hook-form';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import { Link } from 'react-router-dom';
-import * as yup from 'yup';
-import _ from '@lodash';
-import AvatarGroup from '@mui/material/AvatarGroup';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import FormHelperText from '@mui/material/FormHelperText';
-import jwtService from '../../auth/services/jwtService';
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Controller, useForm } from "react-hook-form";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { Link, useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import _ from "@lodash";
+import AvatarGroup from "@mui/material/AvatarGroup";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import FormHelperText from "@mui/material/FormHelperText";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
+import { useState, useEffect } from "react";
+import axios from "axios";
 /**
  * Form Validation Schema
  */
 const schema = yup.object().shape({
-  displayName: yup.string().required('You must enter display name'),
-  email: yup.string().email('You must enter a valid email').required('You must enter a email'),
+  email: yup
+    .string()
+    .email("You must enter a valid email")
+    .required("You must enter a email"),
   password: yup
     .string()
-    .required('Please enter your password.')
-    .min(8, 'Password is too short - should be 8 chars minimum.'),
-  passwordConfirm: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
-  acceptTermsConditions: yup.boolean().oneOf([true], 'The terms and conditions must be accepted.'),
+    .required("Please enter your password.")
+    .min(8, "Password is too short - should be 8 chars minimum."),
+  passwordConfirm: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "Passwords must match"),
+  acceptTermsConditions: yup
+    .boolean()
+    .oneOf([true], "The terms and conditions must be accepted."),
+  firstName: yup.string().required("You must give your first name"),
+  familyName: yup.string().required("You must give your family name"),
 });
 
 const defaultValues = {
-  displayName: '',
-  email: '',
-  password: '',
-  passwordConfirm: '',
+  email: "",
+  password: "",
+  passwordConfirm: "",
   acceptTermsConditions: false,
+  firstName: "",
+  familyName: "",
 };
 
 function SignUpPage() {
   const { control, formState, handleSubmit, reset } = useForm({
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues,
     resolver: yupResolver(schema),
   });
-
+  const navigate = useNavigate();
   const { isValid, dirtyFields, errors, setError } = formState;
+  const [userType, setUserType] = useState("");
+  const [open, setOpen] = useState(false);
+  const [redirectToLogin, setRedirectToLogin] = useState(false);
 
-  function onSubmit({ displayName, password, email }) {
-    jwtService
-      .createUser({
-        displayName,
-        password,
-        email,
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleRedirectToLogin = (event) => {
+    event.preventDefault();
+    setOpen(false);
+    setRedirectToLogin(true);
+  };
+
+  const handleChange = (event) => {
+    event.preventDefault();
+    setUserType(event.target.value);
+    console.log("User type: ", userType);
+  };
+
+  function onSubmit({
+    email,
+    password,
+    passwordConfirm,
+    firstName,
+    familyName,
+  }) {
+    const endpoint = "http://localhost:8000/register/";
+    const data = {
+      email: email,
+      password1: password,
+      password2: passwordConfirm,
+      first_name: firstName,
+      family_name: familyName,
+      user_type: userType,
+    };
+
+    axios
+      .post(endpoint, data)
+      .then((res) => {
+        if (res.status == 201) {
+          console.log("Signed up successfully");
+          setOpen(true);
+        }
       })
-      .then((user) => {
-        // No need to do anything, registered user data will be set at app/auth/AuthContext
-      })
-      .catch((_errors) => {
-        _errors.forEach((error) => {
-          setError(error.type, {
-            type: 'manual',
-            message: error.message,
-          });
-        });
+      .catch((err) => {
+        console.log("Error while signin up: ", err);
       });
   }
+
+  useEffect(() => {
+    if (redirectToLogin) return navigate("/sign-in");
+  }, [redirectToLogin]);
 
   return (
     <div className="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-1 min-w-0">
@@ -90,17 +145,58 @@ function SignUpPage() {
             onSubmit={handleSubmit(onSubmit)}
           >
             <Controller
-              name="displayName"
+              name="firstName"
               control={control}
               render={({ field }) => (
                 <TextField
                   {...field}
                   className="mb-24"
-                  label="Display name"
+                  label="First Name"
                   autoFocus
                   type="name"
-                  error={!!errors.displayName}
-                  helperText={errors?.displayName?.message}
+                  error={!!errors.firstName}
+                  helperText={errors?.firstName?.message}
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              )}
+            />
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                {"Activation email"}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  Please check your email and confirm your account in order to
+                  complete registration process. If you didn't receive any email
+                  please click on Resend email.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>Resend email</Button>
+                <Button onClick={handleRedirectToLogin} autoFocus>
+                  Login
+                </Button>
+              </DialogActions>
+            </Dialog>
+            <Controller
+              name="familyName"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  className="mb-24"
+                  label="Family name"
+                  autoFocus
+                  type="name"
+                  error={!!errors.familyName}
+                  helperText={errors?.familyName?.message}
                   variant="outlined"
                   required
                   fullWidth
@@ -161,17 +257,37 @@ function SignUpPage() {
                 />
               )}
             />
-
+            <InputLabel id="demo-simple-select-label">User Type</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={userType}
+              label="User Type"
+              onChange={handleChange}
+              sx={{
+                width: "50%",
+                height: "45px",
+                marginBottom: "10px",
+              }}
+            >
+              <MenuItem value={"CLIENT"}>Client</MenuItem>
+              <MenuItem value={"VENDOR"}>Vendor</MenuItem>
+            </Select>
             <Controller
               name="acceptTermsConditions"
               control={control}
               render={({ field }) => (
-                <FormControl className="items-center" error={!!errors.acceptTermsConditions}>
+                <FormControl
+                  className="items-center"
+                  error={!!errors.acceptTermsConditions}
+                >
                   <FormControlLabel
                     label="I agree to the Terms of Service and Privacy Policy"
                     control={<Checkbox size="small" {...field} />}
                   />
-                  <FormHelperText>{errors?.acceptTermsConditions?.message}</FormHelperText>
+                  <FormHelperText>
+                    {errors?.acceptTermsConditions?.message}
+                  </FormHelperText>
                 </FormControl>
               )}
             />
@@ -193,7 +309,7 @@ function SignUpPage() {
 
       <Box
         className="relative hidden md:flex flex-auto items-center justify-center h-full p-64 lg:px-112 overflow-hidden"
-        sx={{ backgroundColor: 'primary.main' }}
+        sx={{ backgroundColor: "primary.main" }}
       >
         <svg
           className="absolute inset-0 pointer-events-none"
@@ -205,7 +321,7 @@ function SignUpPage() {
         >
           <Box
             component="g"
-            sx={{ color: 'primary.light' }}
+            sx={{ color: "primary.light" }}
             className="opacity-20"
             fill="none"
             stroke="currentColor"
@@ -218,7 +334,7 @@ function SignUpPage() {
         <Box
           component="svg"
           className="absolute -top-64 -right-64 opacity-20"
-          sx={{ color: 'primary.light' }}
+          sx={{ color: "primary.light" }}
           viewBox="0 0 220 192"
           width="220px"
           height="192px"
@@ -236,7 +352,11 @@ function SignUpPage() {
               <rect x="0" y="0" width="4" height="4" fill="currentColor" />
             </pattern>
           </defs>
-          <rect width="220" height="192" fill="url(#837c3e70-6c3a-44e6-8854-cc48c737b659)" />
+          <rect
+            width="220"
+            height="192"
+            fill="url(#837c3e70-6c3a-44e6-8854-cc48c737b659)"
+          />
         </Box>
 
         <div className="z-10 relative w-full max-w-2xl">
@@ -245,14 +365,15 @@ function SignUpPage() {
             <div>our community</div>
           </div>
           <div className="mt-24 text-lg tracking-tight leading-6 text-gray-400">
-            Fuse helps developers to build organized and well coded dashboards full of beautiful and
-            rich modules. Join us and start building your application today.
+            Fuse helps developers to build organized and well coded dashboards
+            full of beautiful and rich modules. Join us and start building your
+            application today.
           </div>
           <div className="flex items-center mt-32">
             <AvatarGroup
               sx={{
-                '& .MuiAvatar-root': {
-                  borderColor: 'primary.main',
+                "& .MuiAvatar-root": {
+                  borderColor: "primary.main",
                 },
               }}
             >
