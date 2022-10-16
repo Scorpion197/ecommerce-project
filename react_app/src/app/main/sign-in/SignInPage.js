@@ -21,6 +21,8 @@ import axios from "axios";
  * Form Validation Schema
  */
 
+const API = process.env.REACT_APP_BACKEND_API_URL;
+
 const schema = yup.object().shape({
   email: yup
     .string()
@@ -39,6 +41,7 @@ const defaultValues = {
 };
 
 function SignInPage() {
+  console.log("API URL: ", API);
   const { control, formState, handleSubmit, setError, setValue } = useForm({
     mode: "onChange",
     defaultValues,
