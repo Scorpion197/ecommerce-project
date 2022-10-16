@@ -24,6 +24,5 @@ urlpatterns = [
         "",
         include("ecommerce_app.urls"),
     ),
-    path("auth/registration/", include("dj_rest_auth.registration.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

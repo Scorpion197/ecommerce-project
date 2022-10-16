@@ -43,7 +43,7 @@ urlpatterns = [
         VerifyEmailView.as_view(),
         name="account_confirm_email",
     ),
-    path("accounts/", include("allauth.urls"), name="socialaccount_signup"),
+    # path("accounts/", include("allauth.urls"), name="socialaccount_signup"),
     path("login/", LoginView.as_view()),
     path("logout/", LogoutView.as_view()),
     path("verify-email/", VerifyEmailView.as_view(), name="rest_verify_email"),
