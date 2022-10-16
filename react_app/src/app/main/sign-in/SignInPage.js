@@ -41,7 +41,6 @@ const defaultValues = {
 };
 
 function SignInPage() {
-  console.log("API URL: ", API);
   const { control, formState, handleSubmit, setError, setValue } = useForm({
     mode: "onChange",
     defaultValues,

@@ -28,6 +28,9 @@ import axios from "axios";
 /**
  * Form Validation Schema
  */
+
+const API_URL = process.env.REACT_APP_BACKEND_API_URL;
+
 const schema = yup.object().shape({
   email: yup
     .string()
@@ -89,14 +92,15 @@ function SignUpPage() {
     console.log("User type: ", userType);
   };
 
-  function onSubmit({
+  const onSubmit = async ({
     email,
     password,
     passwordConfirm,
     firstName,
     familyName,
-  }) {
-    const endpoint = "http://localhost:8000/register/";
+  }) => {
+    const endpoint = API_URL + "/register/";
+    console.log("ENDPOINT: ", endpoint);
     const data = {
       email: email,
       password1: password,
@@ -105,19 +109,15 @@ function SignUpPage() {
       family_name: familyName,
       user_type: userType,
     };
+    const requestConfig = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    };
 
-    axios
-      .post(endpoint, data)
-      .then((res) => {
-        if (res.status == 201) {
-          console.log("Signed up successfully");
-          setOpen(true);
-        }
-      })
-      .catch((err) => {
-        console.log("Error while signin up: ", err);
-      });
-  }
+    const response = await (await fetch(endpoint, requestConfig)).json();
+    response.detail == "Verification e-mail sent." ? handleClickOpen() : null;
+  };
 
   useEffect(() => {
     if (redirectToLogin) return navigate("/sign-in");
