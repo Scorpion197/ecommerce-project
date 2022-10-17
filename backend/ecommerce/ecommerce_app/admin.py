@@ -13,7 +13,7 @@ class AdminProduct(admin.ModelAdmin):
 
 
 class AdminSubscription(admin.ModelAdmin):
-    list_display = ("user_id",)
+    list_display = ("owner_id",)
 
 
 class AdminOrder(admin.ModelAdmin):

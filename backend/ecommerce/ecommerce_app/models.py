@@ -1,8 +1,12 @@
+from email.policy import default
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from enum import Enum
 from django.utils import timezone
+from django.core.validators import RegexValidator
+
+num_regex = RegexValidator(r"^[0-9]*$", "only numbers are allowed")
 
 # Create your models here.
 class UserTypes(Enum):
@@ -53,16 +57,18 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True, null=True, blank=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    phone = models.CharField(
+        max_length=10, default="", null=True, blank=True, validators=[num_regex]
+    )
     user_type = models.CharField(
         max_length=8,
         choices=[(type.name, type.value) for type in UserTypes],
-        default=UserTypes.CLIENT.value,
+        default=UserTypes.VENDOR.value,
     )
-
     objects = UserAccountManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["user_type"]
+    REQUIRED_FIELDS = ["phone"]
 
     def get_user_type(self):
         return self.user_type
@@ -84,6 +90,21 @@ class SizeChoices(Enum):
     LARGE = "L"
     EXTRA_LARGE = "XL"
     EXTRA_EXTRA_LARGE = "XXL"
+
+
+class Shop(models.Model):
+    shop_name = models.CharField(max_length=20, default="", null=True, blank=True)
+    owner = models.OneToOneField(
+        UserAccount,
+        related_name="shop",
+        on_delete=models.CASCADE,
+        default=None,
+        null=True,
+        blank=True,
+    )
+
+    def __str__(self):
+        return self.shop_name
 
 
 class Product(models.Model):
@@ -114,9 +135,15 @@ class Subscription(models.Model):
         choices=[(dur.name, dur.value) for dur in SubscriptionDuration],
         default=SubscriptionDuration.ONE_MONTH.value,
     )
-    user_id = models.ForeignKey(
-        UserAccount, to_field="id", on_delete=models.CASCADE, null=True, blank=True
+    owner = models.OneToOneField(
+        UserAccount,
+        related_name="subscription",
+        on_delete=models.CASCADE,
+        default=None,
+        null=True,
     )
+
+    is_valid = models.BooleanField(default=False, null=True, blank=True)
 
 
 class OrderStatus(Enum):
