@@ -1,17 +1,27 @@
-import { createAsyncThunk, createEntityAdapter, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import {
+  createAsyncThunk,
+  createEntityAdapter,
+  createSlice,
+} from "@reduxjs/toolkit";
+import axios from "axios";
+import API from "src/API";
 
-export const getProducts = createAsyncThunk('eCommerceApp/products/getProducts', async () => {
-  const response = await axios.get('/api/ecommerce/products');
-  const data = await response.data;
+const API_URL = process.env.REACT_APP_BACKEND_API_URL;
 
-  return data;
-});
+export const getProducts = createAsyncThunk(
+  "eCommerceApp/products/getProducts",
+  async () => {
+    const data = await API.fetchAllProducts();
+    console.log("fetched products: ", data);
+
+    return data;
+  }
+);
 
 export const removeProducts = createAsyncThunk(
-  'eCommerceApp/products',
+  "eCommerceApp/products",
   async (productIds, { dispatch, getState }) => {
-    await axios.delete('/api/ecommerce/products', { data: productIds });
+    await axios.delete("/api/ecommerce/products", { data: productIds });
 
     return productIds;
   }
@@ -23,16 +33,16 @@ export const { selectAll: selectProducts, selectById: selectProductById } =
   productsAdapter.getSelectors((state) => state.eCommerceApp.products);
 
 const productsSlice = createSlice({
-  name: 'eCommerceApp/products',
+  name: "eCommerceApp/products",
   initialState: productsAdapter.getInitialState({
-    searchText: '',
+    searchText: "",
   }),
   reducers: {
     setProductsSearchText: {
       reducer: (state, action) => {
         state.searchText = action.payload;
       },
-      prepare: (event) => ({ payload: event.target.value || '' }),
+      prepare: (event) => ({ payload: event.target.value || "" }),
     },
   },
   extraReducers: {
@@ -44,6 +54,7 @@ const productsSlice = createSlice({
 
 export const { setProductsSearchText } = productsSlice.actions;
 
-export const selectProductsSearchText = ({ eCommerceApp }) => eCommerceApp.products.searchText;
+export const selectProductsSearchText = ({ eCommerceApp }) =>
+  eCommerceApp.products.searchText;
 
 export default productsSlice.reducer;
