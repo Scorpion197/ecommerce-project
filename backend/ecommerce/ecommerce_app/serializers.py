@@ -93,7 +93,10 @@ class CustomLoginSerializer(LoginSerializer):
 
     def authenticate(self, **kwargs):
         user = authenticate(self.context["request"], **kwargs)
-        return user
+        if user.subscription.is_valid == True:
+            return user
+
+        return None
 
 
 class CustomUserDetailSerializer(UserDetailsSerializer):
