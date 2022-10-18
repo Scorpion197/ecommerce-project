@@ -1,4 +1,3 @@
-from sre_constants import MAX_UNTIL
 from dj_rest_auth.registration.serializers import (
     RegisterSerializer,
     VerifyEmailSerializer,
@@ -6,6 +5,8 @@ from dj_rest_auth.registration.serializers import (
 from dj_rest_auth.serializers import LoginSerializer, UserDetailsSerializer
 from rest_framework import serializers
 from django.contrib.auth import authenticate
+from django.template import loader
+
 from .models import *
 
 
