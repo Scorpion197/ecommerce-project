@@ -60,15 +60,22 @@ class CustomRegisterSerializer(RegisterSerializer):
         data_dict["phone"] = self.validated_data.get("phone", "")
         data_dict["email"] = self.validated_data.get("email", "")
         data_dict["is_active"] = self.validated_data.get("is_active", True)
-
         return data_dict
 
     def save(self, request):
         user = super().save(request)
         try:
             shop = self._validated_data["shop"] or None
-            name = shop.get("name")
-            Shop.objects.create()
+            subscription = self._validated_data["subscription"] or None
+            subs_duration = subscription.get("duration")
+            name = shop.get("shop_name")
+            Shop.objects.create(owner=user, shop_name=name)
+            Subscription.objects.create(
+                owner=user, duration=subs_duration, is_valid=False
+            )
+
+            return user
+
         except:
             return user
 
