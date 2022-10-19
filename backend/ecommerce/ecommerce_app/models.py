@@ -58,7 +58,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     phone = models.CharField(
-        max_length=10, default="", null=True, blank=True, validators=[num_regex]
+        max_length=13, default="", null=True, blank=True, validators=[num_regex]
     )
     user_type = models.CharField(
         max_length=8,

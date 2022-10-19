@@ -48,7 +48,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         },
     )
     is_active = serializers.BooleanField(default=True, allow_null=True)
-    phone = serializers.CharField(max_length=10, required=True, validators=[num_regex])
+    phone = serializers.CharField(max_length=13, required=True, validators=[num_regex])
     shop = ShopSerializer(required=True, allow_null=True)
     subscription = SubscriptionSerializer(required=True, allow_null=True)
 
@@ -70,6 +70,7 @@ class CustomRegisterSerializer(RegisterSerializer):
             subscription = self._validated_data["subscription"] or None
             subs_duration = subscription.get("duration")
             name = shop.get("shop_name")
+
             Shop.objects.create(owner=user, shop_name=name)
             Subscription.objects.create(
                 owner=user, duration=subs_duration, is_valid=False
@@ -77,7 +78,8 @@ class CustomRegisterSerializer(RegisterSerializer):
 
             return user
 
-        except:
+        except Exception as e:
+            print("Error occured: ", e)
             return user
 
 
