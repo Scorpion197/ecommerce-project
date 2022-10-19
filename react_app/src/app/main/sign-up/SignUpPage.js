@@ -22,7 +22,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
 import { useState, useEffect } from "react";
 import axios from "axios";
 /**
@@ -48,6 +49,7 @@ const schema = yup.object().shape({
     .oneOf([true], "The terms and conditions must be accepted."),
   firstName: yup.string().required("You must give your first name"),
   familyName: yup.string().required("You must give your family name"),
+  shopName: yup.string().required("You must enter your shop name"),
 });
 
 const defaultValues = {
@@ -57,6 +59,7 @@ const defaultValues = {
   acceptTermsConditions: false,
   firstName: "",
   familyName: "",
+  shopName: "",
 };
 
 function SignUpPage() {
@@ -67,9 +70,10 @@ function SignUpPage() {
   });
   const navigate = useNavigate();
   const { isValid, dirtyFields, errors, setError } = formState;
-  const [userType, setUserType] = useState("");
+  const [SubscriptionType, setSubscriptionType] = useState("");
   const [open, setOpen] = useState(false);
   const [redirectToLogin, setRedirectToLogin] = useState(false);
+  const [phone, setPhone] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -88,8 +92,7 @@ function SignUpPage() {
 
   const handleChange = (event) => {
     event.preventDefault();
-    setUserType(event.target.value);
-    console.log("User type: ", userType);
+    setSubscriptionType(event.target.value);
   };
 
   const onSubmit = async ({
@@ -98,25 +101,33 @@ function SignUpPage() {
     passwordConfirm,
     firstName,
     familyName,
+    shopName,
   }) => {
     const endpoint = API_URL + "/register/";
-    console.log("ENDPOINT: ", endpoint);
     const data = {
       email: email,
       password1: password,
       password2: passwordConfirm,
       first_name: firstName,
       family_name: familyName,
-      user_type: userType,
+      phone: phone.replace("+213", "0"),
+      subscription: {
+        duration: SubscriptionType,
+      },
+      shop: {
+        shop_name: shopName,
+      },
     };
-    const requestConfig = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    };
-
-    const response = await (await fetch(endpoint, requestConfig)).json();
-    response.detail == "Verification e-mail sent." ? handleClickOpen() : null;
+    console.log("DATA POSTED: ", data);
+    axios
+      .post(endpoint, data)
+      .then((res) => {
+        console.log("Signed up successfully");
+        setOpen(true);
+      })
+      .catch((err) => {
+        console.log("Error while doing signup : ", err);
+      });
   };
 
   useEffect(() => {
@@ -222,7 +233,41 @@ function SignUpPage() {
                 />
               )}
             />
-
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                paddingLeft: "10px",
+                height: "52px",
+                border: "1px solid #C4C0C0",
+                borderRadius: "5px",
+                marginBottom: "20px",
+              }}
+            >
+              <PhoneInput
+                placeholder="Enter phone number"
+                value={phone}
+                onChange={setPhone}
+              />
+            </Box>
+            <Controller
+              name="shopName"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  className="mb-24"
+                  label="Shop Name"
+                  autoFocus
+                  type="name"
+                  error={!!errors.shopName}
+                  helperText={errors?.shopName?.message}
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              )}
+            />
             <Controller
               name="password"
               control={control}
@@ -255,14 +300,19 @@ function SignUpPage() {
                   variant="outlined"
                   required
                   fullWidth
+                  sx={{
+                    color: "#F6EFEF",
+                  }}
                 />
               )}
             />
-            <InputLabel id="demo-simple-select-label">User Type</InputLabel>
+            <InputLabel id="demo-simple-select-label">
+              Subscription Type
+            </InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={userType}
+              value={SubscriptionType}
               label="User Type"
               onChange={handleChange}
               sx={{
@@ -271,8 +321,9 @@ function SignUpPage() {
                 marginBottom: "10px",
               }}
             >
-              <MenuItem value={"CLIENT"}>Client</MenuItem>
-              <MenuItem value={"VENDOR"}>Vendor</MenuItem>
+              <MenuItem value={"ONE_MONTH"}>One month</MenuItem>
+              <MenuItem value={"TWO_MONTHS"}>Two months</MenuItem>
+              <MenuItem value={"THREE_MONTHS"}>Three months</MenuItem>
             </Select>
             <Controller
               name="acceptTermsConditions"
