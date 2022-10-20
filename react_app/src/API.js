@@ -17,6 +17,18 @@ const API = {
     console.log("fetching product id");
     console.log("fetching product id");
   },
+
+  fetchAllSubscriptions: async () => {
+    const token = localStorage.getItem("token");
+    const endpoint = API_URL + "/subscriptions/";
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+      },
+    };
+    const response = await (await fetch(endpoint, config)).json();
+    return response;
+  },
 };
 
 export default API;
