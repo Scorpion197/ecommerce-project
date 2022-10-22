@@ -21,12 +21,26 @@ const API = {
   fetchAllSubscriptions: async () => {
     const token = localStorage.getItem("token");
     const endpoint = API_URL + "/subscriptions/";
+    console.log("ENDPOINT IN FETCH SUBSCRIPTIONS: ", endpoint);
     const requestConfig = {
       headers: {
         Authorization: "Token " + token,
       },
     };
-    const response = await (await fetch(endpoint, config)).json();
+    const response = await (await fetch(endpoint, requestConfig)).json();
+    return response;
+  },
+
+  fetchOneSubscription: async (subscriptionId) => {
+    const token = localStorage.getItem("token");
+    const endpoint = API_URL + `/subscriptions/${subscriptionId}/`;
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+      },
+    };
+
+    const response = await (await fetch(endpoint, requestConfig)).json();
     return response;
   },
 };
