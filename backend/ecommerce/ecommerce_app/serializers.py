@@ -21,10 +21,23 @@ class ShopSerializer(serializers.ModelSerializer):
         fields = ["id", "shop_name", "owner"]
 
 
+class CustomUserDetailSerializer(UserDetailsSerializer):
+    first_name = serializers.CharField(required=True, write_only=True)
+    family_name = serializers.CharField(required=True, write_only=True)
+    user_type = serializers.CharField(required=True)
+    is_active = serializers.BooleanField(default=False)
+
+    class Meta:
+        model = UserAccount
+        fields = ["id", "first_name", "family_name", "email", "user_type", "is_active"]
+
+
 class SubscriptionSerializer(serializers.ModelSerializer):
+    owner = CustomUserDetailSerializer(required=True)
+
     class Meta:
         model = Subscription
-        fields = ["id", "created_at", "duration", "owner", "is_valid"]
+        fields = "__all__"
 
 
 class CustomRegisterSerializer(RegisterSerializer):
