@@ -28,6 +28,18 @@ function SubscriptionsTable(props) {
       sortable: false,
       width: 100,
     },
+    {
+      field: "phone",
+      headerName: "Phone number",
+      sortable: false,
+      width: 150,
+    },
+    {
+      field: "email",
+      headerName: "Email",
+      sortable: false,
+      width: 260,
+    },
   ];
   const loadSubscriptions = async () => {
     const data = await API.fetchAllSubscriptions();
@@ -38,6 +50,8 @@ function SubscriptionsTable(props) {
         temp[i] = data[i];
         temp[i]["first_name"] = data[i]["owner"]["first_name"];
         temp[i]["family_name"] = data[i]["owner"]["family_name"];
+        temp[i]["email"] = data[i]["owner"]["email"];
+        temp[i]["phone"] = data[i]["owner"]["phone"];
       }
       setLoading(false);
       setSubscriptions(temp);
