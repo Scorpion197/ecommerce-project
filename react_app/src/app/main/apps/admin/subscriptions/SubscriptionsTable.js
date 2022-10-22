@@ -1,12 +1,7 @@
 import FuseScrollbars from "@fuse/core/FuseScrollbars";
 import FuseUtils from "@fuse/utils";
 import _ from "@lodash";
-import Checkbox from "@mui/material/Checkbox";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
+import { DataGrid } from "@mui/x-data-grid";
 import Typography from "@mui/material/Typography";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -17,13 +12,35 @@ import API from "../../../../../API";
 function SubscriptionsTable(props) {
   const [loading, setLoading] = useState(true);
   const [subscriptions, setSubscriptions] = useState([]);
-
+  const columns = [
+    { field: "id", headerName: "ID", width: 70 },
+    { field: "first_name", headerName: "First name", width: 150 },
+    { field: "family_name", headerName: "Family name", width: 150 },
+    {
+      field: "created_at",
+      headerName: "Created At",
+      type: "number",
+      width: 160,
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      sortable: false,
+      width: 100,
+    },
+  ];
   const loadSubscriptions = async () => {
     const data = await API.fetchAllSubscriptions();
-    if (data.length > 0) {
+    var temp = [];
+    if (data?.length > 0) {
       console.log("Fetched subscriptions: ", data);
+      for (let i = 0; i < data?.length; i++) {
+        temp[i] = data[i];
+        temp[i]["first_name"] = data[i]["owner"]["first_name"];
+        temp[i]["family_name"] = data[i]["owner"]["family_name"];
+      }
       setLoading(false);
-      setSubscriptions(data);
+      setSubscriptions(temp);
     }
   };
 
@@ -54,8 +71,14 @@ function SubscriptionsTable(props) {
   }
 
   return (
-    <div>
-      <h1>Subscriptions</h1>
+    <div style={{ height: 400, width: "100%" }}>
+      <DataGrid
+        rows={subscriptions}
+        columns={columns}
+        pageSize={5}
+        rowsPerPageOptions={[5]}
+        checkboxSelection
+      />
     </div>
   );
 }
