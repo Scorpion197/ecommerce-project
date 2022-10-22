@@ -128,6 +128,12 @@ class SubscriptionDuration(Enum):
     THREE_MONTHS = "THREE_MONTHS"
 
 
+class SubscriptionStatus(Enum):
+    pending = "pending"
+    running = "running"
+    expired = "expired"
+
+
 class Subscription(models.Model):
     created_at = models.DateTimeField(default=timezone.now(), null=True, blank=True)
     duration = models.CharField(
@@ -144,6 +150,11 @@ class Subscription(models.Model):
     )
 
     is_valid = models.BooleanField(default=False, null=True, blank=True)
+    status = models.CharField(
+        max_length=15,
+        choices=[(stat.name, stat.value) for stat in SubscriptionStatus],
+        default=SubscriptionStatus.expired.value,
+    )
 
 
 class OrderStatus(Enum):
