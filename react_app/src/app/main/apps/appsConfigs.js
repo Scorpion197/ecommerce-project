@@ -10,7 +10,6 @@ import ScrumboardAppConfig from "./scrumboard/ScrumboardAppConfig";
 import TasksAppConfig from "./tasks/TasksAppConfig";
 import HelpCenterAppConfig from "./help-center/HelpCenterAppConfig";
 import ProfileAppConfig from "./profile/profileAppConfig";
-import AdminAppConfig from "./admin/AdminAppConfig";
 const appsConfigs = [
   MailboxAppConfig,
   FileManagerAppConfig,
@@ -24,7 +23,6 @@ const appsConfigs = [
   TasksAppConfig,
   HelpCenterAppConfig,
   ProfileAppConfig,
-  AdminAppConfig,
 ];
 
 export default appsConfigs;
