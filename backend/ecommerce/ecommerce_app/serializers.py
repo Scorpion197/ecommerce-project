@@ -4,9 +4,10 @@ from dj_rest_auth.registration.serializers import (
 )
 from dj_rest_auth.serializers import LoginSerializer, UserDetailsSerializer
 from rest_framework import serializers
+from rest_framework.response import Response
 from django.contrib.auth import authenticate
-from django.template import loader
-
+from django.core.mail import send_mail
+from django.conf import settings
 from .models import *
 
 
@@ -41,7 +42,7 @@ class CustomUserDetailSerializer(UserDetailsSerializer):
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
-    owner = CustomUserDetailSerializer(required=True)
+    owner = CustomUserDetailSerializer(required=False)
 
     class Meta:
         model = Subscription
@@ -68,6 +69,7 @@ class CustomRegisterSerializer(RegisterSerializer):
             "input_type": "password",
         },
     )
+
     is_active = serializers.BooleanField(default=True, allow_null=True)
     phone = serializers.CharField(max_length=13, required=True, validators=[num_regex])
     shop = ShopSerializer(required=True, allow_null=True)
@@ -95,6 +97,19 @@ class CustomRegisterSerializer(RegisterSerializer):
             Shop.objects.create(owner=user, shop_name=name)
             Subscription.objects.create(
                 owner=user, duration=subs_duration, is_valid=False
+            )
+
+            mail_content = "A new subscription has been requested"
+            mail_subject = "New subscription"
+            # send email to admin
+            send_mail(
+                mail_subject,
+                mail_content,
+                settings.EMAIL_HOST_USER,
+                [
+                    "kamelprim197@gmail.com",
+                ],
+                fail_silently=False,
             )
 
             return user
