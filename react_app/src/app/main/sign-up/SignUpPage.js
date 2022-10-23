@@ -321,9 +321,9 @@ function SignUpPage() {
                 marginBottom: "10px",
               }}
             >
-              <MenuItem value={"ONE_MONTH"}>One month</MenuItem>
-              <MenuItem value={"TWO_MONTHS"}>Two months</MenuItem>
-              <MenuItem value={"THREE_MONTHS"}>Three months</MenuItem>
+              <MenuItem value={"ONE_MONTH"}>1 month</MenuItem>
+              <MenuItem value={"TWO_MONTHS"}>2 months</MenuItem>
+              <MenuItem value={"THREE_MONTHS"}>3 months</MenuItem>
             </Select>
             <Controller
               name="acceptTermsConditions"
