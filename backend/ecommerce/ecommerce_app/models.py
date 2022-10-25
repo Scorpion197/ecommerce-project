@@ -148,8 +148,8 @@ class Subscription(models.Model):
         default=None,
         null=True,
     )
-
-    is_valid = models.BooleanField(default=False, null=True, blank=True)
+    started_at = models.DateTimeField(default=timezone.now(), null=True, blank=True)
+    expires_at = models.DateTimeField(default=timezone.now(), null=True, blank=True)
     status = models.CharField(
         max_length=15,
         choices=[(stat.name, stat.value) for stat in SubscriptionStatus],

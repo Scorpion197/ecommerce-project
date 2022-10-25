@@ -85,7 +85,6 @@ EMAIL_HOST = "smtp.gmail.com"
 EMAIL_HOST_USER = "doudou.gaw@gmail.com"
 EMAIL_HOST_PASSWORD = "lgqdigcvizesirpo"
 EMAIL_PORT = 587
-LOGIN_URL = "https://localhost:8000/login/"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

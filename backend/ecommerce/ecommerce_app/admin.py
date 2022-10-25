@@ -13,12 +13,7 @@ class AdminProduct(admin.ModelAdmin):
 
 
 class AdminSubscription(admin.ModelAdmin):
-    list_display = (
-        "owner_id",
-        "created_at",
-        "status",
-        "is_valid",
-    )
+    list_display = ("owner_id", "created_at", "status", "started_at", "expires_at")
 
 
 class AdminOrder(admin.ModelAdmin):

@@ -1,13 +1,14 @@
+from symbol import subscript
 from dj_rest_auth.registration.serializers import (
     RegisterSerializer,
     VerifyEmailSerializer,
 )
 from dj_rest_auth.serializers import LoginSerializer, UserDetailsSerializer
 from rest_framework import serializers
-from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 from django.conf import settings
+from allauth.account.models import EmailAddress
 from .models import *
 
 
@@ -20,6 +21,12 @@ class ShopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
         fields = ["id", "shop_name", "owner"]
+
+
+class EmailAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmailAddress
+        fields = "__all__"
 
 
 class CustomUserDetailSerializer(UserDetailsSerializer):
@@ -82,6 +89,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         data_dict["family_name"] = self.validated_data.get("family_name", "")
         data_dict["user_type"] = self.validated_data.get("user_type", "VENDOR")
         data_dict["phone"] = self.validated_data.get("phone", "")
+        print("PHONE", data_dict["phone"])
         data_dict["email"] = self.validated_data.get("email", "")
         data_dict["is_active"] = self.validated_data.get("is_active", True)
         return data_dict
@@ -96,7 +104,9 @@ class CustomRegisterSerializer(RegisterSerializer):
 
             Shop.objects.create(owner=user, shop_name=name)
             Subscription.objects.create(
-                owner=user, duration=subs_duration, is_valid=False
+                owner=user,
+                duration=subs_duration,
+                status=SubscriptionStatus.pending.value,
             )
 
             mail_content = "A new subscription has been requested"
@@ -129,23 +139,10 @@ class CustomLoginSerializer(LoginSerializer):
         },
     )
 
+    #! change later
     def authenticate(self, **kwargs):
         user = authenticate(self.context["request"], **kwargs)
-        if user.subscription.is_valid == True:
-            return user
-
-        return None
-
-
-class CustomUserDetailSerializer(UserDetailsSerializer):
-    first_name = serializers.CharField(required=True, write_only=True)
-    family_name = serializers.CharField(required=True, write_only=True)
-    user_type = serializers.CharField(required=True)
-    is_active = serializers.BooleanField(default=False)
-
-    class Meta:
-        model = UserAccount
-        fields = ["id", "first_name", "family_name", "email", "user_type", "is_active"]
+        return user
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -165,3 +162,7 @@ class OrderSerializer(serializers.ModelSerializer):
             "user_id",
             "product_id",
         ]
+
+
+class VerifyEmailSerializer(serializers.Serializer):
+    key = serializers.CharField(write_only=True)
