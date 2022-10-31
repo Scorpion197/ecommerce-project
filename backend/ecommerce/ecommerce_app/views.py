@@ -10,6 +10,9 @@ from django.utils.translation import gettext_lazy as _
 from django.http import JsonResponse
 from .models import *
 from .serializers import *
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
 
 # Create your views here.
 
@@ -50,6 +53,38 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
     serializer_class = SubscriptionSerializer
     permission_classes = [IsAuthenticated]
     filter_fields = ["is_valid", "duration", "created_at"]
+
+    def update(self, request, *args, **kwargs):
+        request_data = request.data
+        subscription_id = kwargs["pk"]
+        new_subscription_status = request_data["status"]
+        subscription_object = Subscription.objects.get(id=subscription_id)
+
+        # admin accepted subscription
+        if new_subscription_status == "running":
+            subscription_object.status = new_subscription_status
+            subscription_object.started_at = datetime.now()
+            if subscription_object.duration == "ONE_MONTH":
+                subscription_object.expires_at = (
+                    subscription_object.started_at + relativedelta(months=1)
+                )
+            elif subscription_object.duration == "TWO_MONTHS":
+                subscription_object.expires_at = (
+                    subscription_object.started_at + relativedelta(months=2)
+                )
+            elif subscription_object.duration == "THREE_MONTHS":
+                subscription_object.expires_at = (
+                    subscription_object.started_at + relativedelta(months=3)
+                )
+
+            subscription_object.save()
+            serializer = SubscriptionSerializer(subscription_object)
+            return Response(serializer.data, status=200)
+        elif new_subscription_status == "pending":
+            subscription_object.status = new_subscription_status
+            subscription_object.save()
+            serializer = SubscriptionSerializer(subscription_object)
+            return Response(subscription_object.data, status=200)
 
 
 @permission_classes([IsAuthenticated])

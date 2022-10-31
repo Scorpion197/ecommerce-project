@@ -2,9 +2,11 @@ from email.policy import default
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
-from enum import Enum
 from django.utils import timezone
 from django.core.validators import RegexValidator
+from enum import Enum
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 num_regex = RegexValidator(r"^[0-9]*$", "only numbers are allowed")
 
@@ -135,7 +137,7 @@ class SubscriptionStatus(Enum):
 
 
 class Subscription(models.Model):
-    created_at = models.DateTimeField(default=timezone.now(), null=True, blank=True)
+    created_at = models.DateTimeField(default=datetime.now(), null=True, blank=True)
     duration = models.CharField(
         max_length=15,
         choices=[(dur.name, dur.value) for dur in SubscriptionDuration],
@@ -148,8 +150,8 @@ class Subscription(models.Model):
         default=None,
         null=True,
     )
-    started_at = models.DateTimeField(default=timezone.now(), null=True, blank=True)
-    expires_at = models.DateTimeField(default=timezone.now(), null=True, blank=True)
+    started_at = models.DateTimeField(default=datetime.now(), null=True, blank=True)
+    expires_at = models.DateTimeField(default=datetime.now(), null=True, blank=True)
     status = models.CharField(
         max_length=15,
         choices=[(stat.name, stat.value) for stat in SubscriptionStatus],

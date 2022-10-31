@@ -10,6 +10,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from allauth.account.models import EmailAddress
 from .models import *
+from datetime import datetime
 
 
 class CustomVerifyEmailSerializer(VerifyEmailSerializer):
@@ -103,10 +104,13 @@ class CustomRegisterSerializer(RegisterSerializer):
             name = shop.get("shop_name")
 
             Shop.objects.create(owner=user, shop_name=name)
+
             Subscription.objects.create(
                 owner=user,
                 duration=subs_duration,
                 status=SubscriptionStatus.pending.value,
+                created_at=datetime.now(),
+                expires_at=None,
             )
 
             mail_content = "A new subscription has been requested"
@@ -142,7 +146,10 @@ class CustomLoginSerializer(LoginSerializer):
     #! change later
     def authenticate(self, **kwargs):
         user = authenticate(self.context["request"], **kwargs)
-        return user
+        if user:
+            if user.subscription.status == "running" or user.user_type == "ADMIN":
+                return user
+        return None
 
 
 class ProductSerializer(serializers.ModelSerializer):
