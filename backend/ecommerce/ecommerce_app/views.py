@@ -12,7 +12,9 @@ from .models import *
 from .serializers import *
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import pytz
 
+utc = pytz.UTC
 
 # Create your views here.
 
@@ -65,15 +67,15 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
             subscription_object.status = new_subscription_status
             subscription_object.started_at = datetime.now()
             if subscription_object.duration == "ONE_MONTH":
-                subscription_object.expires_at = (
+                subscription_object.expires_at = utc.localize(
                     subscription_object.started_at + relativedelta(months=1)
                 )
             elif subscription_object.duration == "TWO_MONTHS":
-                subscription_object.expires_at = (
+                subscription_object.expires_at = utc.localize(
                     subscription_object.started_at + relativedelta(months=2)
                 )
             elif subscription_object.duration == "THREE_MONTHS":
-                subscription_object.expires_at = (
+                subscription_object.expires_at = utc.localize(
                     subscription_object.started_at + relativedelta(months=3)
                 )
 
@@ -84,7 +86,7 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
             subscription_object.status = new_subscription_status
             subscription_object.save()
             serializer = SubscriptionSerializer(subscription_object)
-            return Response(subscription_object.data, status=200)
+            return Response(serializer.data, status=200)
 
 
 @permission_classes([IsAuthenticated])

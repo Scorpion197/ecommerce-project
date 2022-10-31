@@ -1,4 +1,3 @@
-from symbol import subscript
 from dj_rest_auth.registration.serializers import (
     RegisterSerializer,
     VerifyEmailSerializer,
@@ -11,6 +10,9 @@ from django.conf import settings
 from allauth.account.models import EmailAddress
 from .models import *
 from datetime import datetime
+import pytz
+
+utc = pytz.UTC
 
 
 class CustomVerifyEmailSerializer(VerifyEmailSerializer):
@@ -109,7 +111,7 @@ class CustomRegisterSerializer(RegisterSerializer):
                 owner=user,
                 duration=subs_duration,
                 status=SubscriptionStatus.pending.value,
-                created_at=datetime.now(),
+                created_at=utc.localize(datetime.now()),
                 expires_at=None,
             )
 
