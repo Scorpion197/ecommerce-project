@@ -1,7 +1,9 @@
-from .models import UserAccount, Subscription
-from rest_framework.response import Response
+from .models import UserAccount
 from rest_framework.authtoken.models import Token
 from datetime import datetime
+import pytz
+
+utc = pytz.UTC
 
 
 class SubscriptionMiddleWare:
@@ -18,7 +20,8 @@ class SubscriptionMiddleWare:
                     response = self.get_response(request)
                     return response
 
-                if datetime.now() == user_account.subscription.expires_at:
+                current_date = utc.localize(datetime.now())
+                if current_date > user_account.subscription.expires_at:
                     user_token_object = Token.objects.get(key=token)
                     user_token_object.delete()
                     subscription_object = user_account.subscription
@@ -32,3 +35,7 @@ class SubscriptionMiddleWare:
                 print(e)
                 response = self.get_response(request)
                 return response
+        else:
+            response = self.get_response(request)
+            print(response)
+            return response
