@@ -149,8 +149,21 @@ class CustomLoginSerializer(LoginSerializer):
     def authenticate(self, **kwargs):
         user = authenticate(self.context["request"], **kwargs)
         if user:
-            if user.subscription.status == "running" or user.user_type == "ADMIN":
+            if user.user_type == "ADMIN":
                 return user
+            elif user.user_type == "VENDOR":
+                if user.subscription.status == "expired":
+                    return None
+                elif utc.localize(datetime.now()) > user.subscription.expires_at:
+                    if user.subscription.status != "expired":
+                        subscription_object = user.subscription
+                        subscription_object.status = "expired"
+                        subscription_object.save()
+                        return None
+                    return None
+
+                return user
+
         return None
 
 
