@@ -152,6 +152,7 @@ class CustomLoginSerializer(LoginSerializer):
             if user.user_type == "ADMIN":
                 return user
             elif user.user_type == "VENDOR":
+
                 if user.subscription.status == "expired":
                     return None
                 elif utc.localize(datetime.now()) > user.subscription.expires_at:
@@ -170,7 +171,7 @@ class CustomLoginSerializer(LoginSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ["id", "name", "price", "size", "color", "image"]
+        fields = "__all__"
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -184,6 +185,12 @@ class OrderSerializer(serializers.ModelSerializer):
             "user_id",
             "product_id",
         ]
+
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = "__all__"
 
 
 class VerifyEmailSerializer(serializers.Serializer):

@@ -25,7 +25,6 @@ schema_view = get_schema_view(
 
 # Store routes
 router = routers.DefaultRouter()
-router.register("products", ProductsViewSet, basename="manage_products")
 router.register("orders", OrderViewSet, basename="manage_orders")
 router.register("subscriptions", SubscriptionViewSet, basename="manage_subscriptions")
 # Auth routes
@@ -66,6 +65,9 @@ urlpatterns = [
         r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
     ),
     path("get-subscriptions/", get_subscriptions, name="test_subscriptions_function"),
+    path("products/", get_products, name="get_products"),
+    path("product/<int:product_id>/", get_one_product, name="get_one_product"),
+    path("add-product/", ProductViewSet.as_view(), name="add_product"),
 ]
 
 urlpatterns += router.urls

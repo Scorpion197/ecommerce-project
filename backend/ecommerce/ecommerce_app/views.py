@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import status
 from allauth.account.views import ConfirmEmailView
 from allauth.account.models import EmailAddress
 from django.utils.translation import gettext_lazy as _
@@ -19,10 +21,95 @@ utc = pytz.UTC
 # Create your views here.
 
 
-class ProductsViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated]
+class ProductViewSet(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def get(self, request, *args, **kwargs):
+        pass
+
+    def put(self, request, *args, **kwargs):
+
+        try:
+            product_object = Product.objects.get(id=request.data["id"])
+            product_object.name = request.data["name"]
+            product_object.price = request.data["price"]
+            product_object.color = request.data["color"]
+            product_object.quantity = request.data["quantity"]
+            product_object.barcode = request.data["barcode"]
+            product_object.weight = request.data["weight"]
+            product_object.sku = request.data["sku"]
+
+            product_object.save()
+
+            serializer = ProductSerializer(product_object)
+            return Response(serializer.data)
+        except Product.DoesNotExist:
+            return Response({"message": "Product doesn't not exist"})
+
+    def post(self, request, *args, **kwargs):
+        new_product = Product.objects.create(
+            name=request.data["name"],
+            price=request.data["price"],
+            quantity=request.data["quantity"],
+            barcode=request.data["barcode"],
+            weight=request.data["weight"],
+            sku=request.data["sku"],
+        )
+
+        serializer = ProductSerializer(new_product)
+        return Response(serializer.data)
+
+
+@permission_classes([IsAuthenticated])
+@api_view(["GET"])
+def get_products(request):
+    products = Product.objects.all()
+    response_data = []
+    for product in products:
+        product_images = ProductImage.objects.filter(product=product.id)
+
+        serializer = ProductSerializer(product)
+        product_image_serializer = ProductImageSerializer(product_images, many=True)
+        response_data.append(
+            {
+                "id": serializer.data["id"],
+                "name": serializer.data["name"],
+                "price": serializer.data["price"],
+                "color": serializer.data["color"],
+                "quantity": serializer.data["quantity"],
+                "created_at": serializer.data["created_at"],
+                "category": Category.objects.get(id=product.category.id).name,
+                "images": product_image_serializer.data,
+            }
+        )
+    return Response(response_data)
+
+
+@permission_classes([IsAuthenticated])
+@api_view(["GET"])
+def get_one_product(request, product_id=None):
+    if product_id == None:
+        return Response({"error": "Product id should be provided"})
+
+    product = Product.objects.get(id=product_id)
+    product_serializer = ProductSerializer(product)
+    product_images = ProductImage.objects.filter(product=product.id)
+    product_image_serializer = ProductImageSerializer(product_images, many=True)
+    response_data = []
+    response_data.append(
+        {
+            "id": product.id,
+            "name": product.name,
+            "price": product.price,
+            "color": product.color,
+            "quantity": product.quantity,
+            "created_at": product_serializer.data["created_at"],
+            "category": Category.objects.get(id=product.category.id).name,
+            "images": product_image_serializer.data,
+        }
+    )
+
+    return JsonResponse(response_data[0], safe=False, status=200)
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -39,7 +126,7 @@ class CustomVerifyEmailView(APIView, ConfirmEmailView):
         return VerifyEmailSerializer(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        print("REQUEST: ", request)
+        pass
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

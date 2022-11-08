@@ -109,6 +109,13 @@ class Shop(models.Model):
         return self.shop_name
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=200, blank=True, default="", null=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Product(models.Model):
     name = models.CharField(max_length=200, blank=True, null=True, default="")
     price = models.IntegerField(default=0)
@@ -119,6 +126,19 @@ class Product(models.Model):
     )
 
     color = models.CharField(max_length=20, blank=True, null=True, default="")
+    quantity = models.IntegerField(default=0, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now(), blank=True, null=True)
+    category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE)
+    weight = models.IntegerField(default=0, null=True, blank=True)
+    sku = models.CharField(max_length=20, default="", null=True, blank=True)
+    barcode = models.CharField(max_length=50, default="", null=True, blank=True)
+
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, null=True, default=None
+    )
+
     image = models.ImageField(
         upload_to=upload_product_image, blank=True, null=True, default=None
     )
