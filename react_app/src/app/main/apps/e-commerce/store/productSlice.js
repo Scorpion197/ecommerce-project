@@ -1,16 +1,20 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
-import FuseUtils from '@fuse/utils';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import FuseUtils from "@fuse/utils";
+import API from "../../../../../API";
+const API_URL = process.env.REACT_APP_BACKEND_API_URL;
 
-export const getProduct = createAsyncThunk('eCommerceApp/product/getProduct', async (productId) => {
-  const response = await axios.get(`/api/ecommerce/products/${productId}`);
-  const data = await response.data;
-
-  return data === undefined ? null : data;
-});
+export const getProduct = createAsyncThunk(
+  "eCommerceApp/product/getProduct",
+  async (productId) => {
+    const response = await API.fetchOneProduct(productId);
+    console.log("response: ", response);
+    return response;
+  }
+);
 
 export const removeProduct = createAsyncThunk(
-  'eCommerceApp/product/removeProduct',
+  "eCommerceApp/product/removeProduct",
   async (val, { dispatch, getState }) => {
     const { id } = getState().eCommerceApp.product;
     await axios.delete(`/api/ecommerce/products/${id}`);
@@ -19,20 +23,31 @@ export const removeProduct = createAsyncThunk(
 );
 
 export const saveProduct = createAsyncThunk(
-  'eCommerceApp/product/saveProduct',
+  "eCommerceApp/product/saveProduct",
   async (productData, { dispatch, getState }) => {
     const { id } = getState().eCommerceApp;
+    delete productData.created_at;
+    //let formData = new FormData();
+    //formData.append("name", productData.name);
+    //formData.append("price", productData.price);
+    //formData.append("quantity", productData.quantity);
+    //formData.append("color", product.color);
 
-    const response = await axios.put(`/api/ecommerce/products/${id}`, productData);
-
-    const data = await response.data;
-
-    return data;
+    const response = await API.updateProduct(productData);
+    return response;
   }
 );
 
+export const addNewProduct = createAsyncThunk(
+  "ecommerceApp/product/newProduct",
+  async (productData) => {
+    const response = await API.addNewProduct(productData);
+    console.log("response: ", response);
+    return response;
+  }
+);
 const productSlice = createSlice({
-  name: 'eCommerceApp/product',
+  name: "eCommerceApp/product",
   initialState: null,
   reducers: {
     resetProduct: () => null,
@@ -41,9 +56,9 @@ const productSlice = createSlice({
       prepare: (event) => ({
         payload: {
           id: FuseUtils.generateGUID(),
-          name: '',
-          handle: '',
-          description: '',
+          name: "",
+          handle: "",
+          description: "",
           categories: [],
           tags: [],
           images: [],
@@ -52,11 +67,11 @@ const productSlice = createSlice({
           taxRate: 0,
           comparedPrice: 0,
           quantity: 0,
-          sku: '',
-          width: '',
-          height: '',
-          depth: '',
-          weight: '',
+          sku: "",
+          width: "",
+          height: "",
+          depth: "",
+          weight: "",
           extraShippingFee: 0,
           active: true,
         },
@@ -65,6 +80,7 @@ const productSlice = createSlice({
   },
   extraReducers: {
     [getProduct.fulfilled]: (state, action) => action.payload,
+    [addNewProduct.fulfilled]: (state, action) => action.payload,
     [saveProduct.fulfilled]: (state, action) => action.payload,
     [removeProduct.fulfilled]: (state, action) => null,
   },

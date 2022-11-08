@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const API_URL = process.env.REACT_APP_BACKEND_API_URL;
 const API = {
   fetchAllProducts: async () => {
@@ -14,8 +16,16 @@ const API = {
   },
 
   fetchOneProduct: async (productId) => {
-    console.log("fetching product id");
-    console.log("fetching product id");
+    const endpoint = API_URL + `/product/${productId}/`;
+    const token = localStorage.getItem("token");
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+      },
+    };
+
+    const response = await (await fetch(endpoint, requestConfig)).json();
+    return response;
   },
 
   fetchAllSubscriptions: async () => {
@@ -41,6 +51,29 @@ const API = {
     };
 
     const response = await (await fetch(endpoint, requestConfig)).json();
+    return response;
+  },
+
+  updateProduct: async (productData) => {
+    const token = localStorage.getItem("token");
+    const endpoint = API_URL + "/add-product/";
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    let formData = new FormData();
+    formData.append("name", productData.name);
+    formData.append("price", productData.price);
+    formData.append("category", productData.category);
+    formData.append("color", productData.color);
+    formData.append("id", productData.id);
+    formData.append("quantity", productData.quantity);
+    formData.append("barcode", productData.barcode);
+    formData.append("weight", productData.weight);
+    formData.append("sku", productData.sku);
+    const response = await axios.put(endpoint, formData, requestConfig);
     return response;
   },
 };

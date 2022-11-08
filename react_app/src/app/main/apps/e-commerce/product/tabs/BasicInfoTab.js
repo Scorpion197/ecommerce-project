@@ -1,6 +1,6 @@
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import { Controller, useFormContext } from 'react-hook-form';
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import { Controller, useFormContext } from "react-hook-form";
 
 function BasicInfoTab(props) {
   const methods = useFormContext();
@@ -27,79 +27,111 @@ function BasicInfoTab(props) {
           />
         )}
       />
-
       <Controller
-        name="description"
+        name="category"
         control={control}
         render={({ field }) => (
           <TextField
             {...field}
             className="mt-8 mb-16"
-            id="description"
-            label="Description"
-            type="text"
-            multiline
-            rows={5}
+            error={!!errors.name}
+            required
+            helperText={errors?.name?.message}
+            label="Category"
+            autoFocus
+            id="category"
             variant="outlined"
             fullWidth
           />
         )}
       />
-
       <Controller
-        name="categories"
+        name="weight"
         control={control}
-        defaultValue={[]}
-        render={({ field: { onChange, value } }) => (
-          <Autocomplete
+        render={({ field }) => (
+          <TextField
+            {...field}
             className="mt-8 mb-16"
-            multiple
-            freeSolo
-            options={[]}
-            value={value}
-            onChange={(event, newValue) => {
-              onChange(newValue);
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder="Select multiple categories"
-                label="Categories"
-                variant="outlined"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            )}
+            error={!!errors.name}
+            helperText={errors?.name?.message}
+            label="Weight"
+            autoFocus
+            id="weight"
+            variant="outlined"
+            fullWidth
+            type="number"
           />
         )}
       />
-
       <Controller
-        name="tags"
+        name="barcode"
         control={control}
-        defaultValue={[]}
-        render={({ field: { onChange, value } }) => (
-          <Autocomplete
+        render={({ field }) => (
+          <TextField
+            {...field}
             className="mt-8 mb-16"
-            multiple
-            freeSolo
-            options={[]}
-            value={value}
-            onChange={(event, newValue) => {
-              onChange(newValue);
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder="Select multiple tags"
-                label="Tags"
-                variant="outlined"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            )}
+            error={!!errors.name}
+            helperText={errors?.name?.message}
+            label="Barcode"
+            autoFocus
+            id="barcode"
+            variant="outlined"
+            fullWidth
+          />
+        )}
+      />
+      <Controller
+        name="sku"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            className="mt-8 mb-16"
+            error={!!errors.name}
+            helperText={errors?.name?.message}
+            label="SKU"
+            autoFocus
+            id="sku"
+            variant="outlined"
+            fullWidth
+          />
+        )}
+      />
+      <Controller
+        name="quantity"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            className="mt-8 mb-16"
+            error={!!errors.name}
+            required
+            helperText={errors?.name?.message}
+            label="Quantity"
+            autoFocus
+            id="name"
+            variant="outlined"
+            fullWidth
+            type="number"
+          />
+        )}
+      />
+      <Controller
+        name="price"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            className="mt-8 mb-16"
+            error={!!errors.name}
+            required
+            helperText={errors?.name?.message}
+            label="Price"
+            autoFocus
+            id="price"
+            variant="outlined"
+            type="number"
+            fullWidth
           />
         )}
       />

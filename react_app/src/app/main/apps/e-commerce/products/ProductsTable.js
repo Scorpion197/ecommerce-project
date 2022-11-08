@@ -1,22 +1,34 @@
-import FuseScrollbars from '@fuse/core/FuseScrollbars';
-import _ from '@lodash';
-import Checkbox from '@mui/material/Checkbox';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
-import clsx from 'clsx';
-import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import FuseScrollbars from "@fuse/core/FuseScrollbars";
+import _ from "@lodash";
+import Checkbox from "@mui/material/Checkbox";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
-import { useDispatch, useSelector } from 'react-redux';
-import withRouter from '@fuse/core/withRouter';
-import FuseLoading from '@fuse/core/FuseLoading';
-import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
-import { getProducts, selectProducts, selectProductsSearchText } from '../store/productsSlice';
-import ProductsTableHead from './ProductsTableHead';
+import { useDispatch, useSelector } from "react-redux";
+import withRouter from "@fuse/core/withRouter";
+import FuseLoading from "@fuse/core/FuseLoading";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import {
+  getProducts,
+  selectProducts,
+  selectProductsSearchText,
+} from "../store/productsSlice";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+const API_URL = process.env.REACT_APP_BACKEND_API_URL;
 
 function ProductsTable(props) {
   const dispatch = useDispatch();
@@ -29,18 +41,34 @@ function ProductsTable(props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [order, setOrder] = useState({
-    direction: 'asc',
+    direction: "asc",
     id: null,
   });
 
+  const [productDeleted, setProductDeleted] = useState(false);
+  const [clickedProductId, setClickedProductId] = useState(-1);
+  const navigate = useNavigate();
+
+  const handleRedirectToProduct = (productId) => {
+    setClickedProductId(productId);
+  };
+
+  useEffect(() => {
+    if (clickedProductId != -1) {
+      navigate(`/apps/e-commerce/products/${clickedProductId}`);
+    }
+  }, [clickedProductId]);
+
   useEffect(() => {
     dispatch(getProducts()).then(() => setLoading(false));
-  }, [dispatch]);
+  }, [dispatch, productDeleted]);
 
   useEffect(() => {
     if (searchText.length !== 0) {
       setData(
-        _.filter(products, (item) => item.name.toLowerCase().includes(searchText.toLowerCase()))
+        _.filter(products, (item) =>
+          item.name.toLowerCase().includes(searchText.toLowerCase())
+        )
       );
       setPage(0);
     } else {
@@ -50,10 +78,10 @@ function ProductsTable(props) {
 
   function handleRequestSort(event, property) {
     const id = property;
-    let direction = 'desc';
+    let direction = "desc";
 
-    if (order.id === property && order.direction === 'desc') {
-      direction = 'asc';
+    if (order.id === property && order.direction === "desc") {
+      direction = "asc";
     }
 
     setOrder({
@@ -106,6 +134,27 @@ function ProductsTable(props) {
     setRowsPerPage(event.target.value);
   }
 
+  const handleDeleteClick = async (productId) => {
+    const token = localStorage.getItem("token");
+    const endpoint = API_URL + `/products/${productId}/`;
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+      },
+    };
+
+    axios
+      .delete(endpoint, requestConfig)
+      .then((res) => {
+        if (res.status == 204) {
+          console.log("Produce deleted");
+          setProductDeleted(true);
+        }
+      })
+      .catch((error) => {
+        console.log("error while deleting product");
+      });
+  };
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -130,135 +179,79 @@ function ProductsTable(props) {
 
   return (
     <div className="w-full flex flex-col min-h-full">
-      <FuseScrollbars className="grow overflow-x-auto">
-        <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
-          <ProductsTableHead
-            selectedProductIds={selected}
-            order={order}
-            onSelectAllClick={handleSelectAllClick}
-            onRequestSort={handleRequestSort}
-            rowCount={data.length}
-            onMenuItemClick={handleDeselect}
-          />
-
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Product Name</TableCell>
+              <TableCell align="right">Price</TableCell>
+              <TableCell align="right">Quantity</TableCell>
+              <TableCell align="right">Color</TableCell>
+              <TableCell align="right">Created At</TableCell>
+              <TableCell align="right">Actions</TableCell>
+            </TableRow>
+          </TableHead>
           <TableBody>
-            {_.orderBy(
-              data,
-              [
-                (o) => {
-                  switch (order.id) {
-                    case 'categories': {
-                      return o.categories[0];
-                    }
-                    default: {
-                      return o[order.id];
-                    }
-                  }
-                },
-              ],
-              [order.direction]
-            )
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((n) => {
-                const isSelected = selected.indexOf(n.id) !== -1;
-                return (
-                  <TableRow
-                    className="h-72 cursor-pointer"
-                    hover
-                    role="checkbox"
-                    aria-checked={isSelected}
-                    tabIndex={-1}
-                    key={n.id}
-                    selected={isSelected}
-                    onClick={(event) => handleClick(n)}
-                  >
-                    <TableCell className="w-40 md:w-64 text-center" padding="none">
-                      <Checkbox
-                        checked={isSelected}
-                        onClick={(event) => event.stopPropagation()}
-                        onChange={(event) => handleCheck(event, n.id)}
-                      />
-                    </TableCell>
-
-                    <TableCell
-                      className="w-52 px-4 md:px-0"
-                      component="th"
-                      scope="row"
-                      padding="none"
+            {products?.map((product) => (
+              <TableRow
+                key={product.id}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {product?.name}
+                </TableCell>
+                <TableCell align="right">{product?.price}</TableCell>
+                <TableCell align="right">{product?.quantity}</TableCell>
+                <TableCell align="right">{product?.color}</TableCell>
+                <TableCell align="right">{product?.created_at}</TableCell>
+                <TableCell align="right">
+                  <Stack direction="row" spacing={0}>
+                    <IconButton
+                      aria-label="delete"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        handleDeleteClick(product.id);
+                      }}
                     >
-                      {n.images.length > 0 && n.featuredImageId ? (
-                        <img
-                          className="w-full block rounded"
-                          src={_.find(n.images, { id: n.featuredImageId }).url}
-                          alt={n.name}
-                        />
-                      ) : (
-                        <img
-                          className="w-full block rounded"
-                          src="assets/images/apps/ecommerce/product-image-placeholder.png"
-                          alt={n.name}
-                        />
-                      )}
-                    </TableCell>
-
-                    <TableCell className="p-4 md:p-16" component="th" scope="row">
-                      {n.name}
-                    </TableCell>
-
-                    <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
-                      {n.categories.join(', ')}
-                    </TableCell>
-
-                    <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-                      <span>$</span>
-                      {n.priceTaxIncl}
-                    </TableCell>
-
-                    <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-                      {n.quantity}
-                      <i
-                        className={clsx(
-                          'inline-block w-8 h-8 rounded mx-8',
-                          n.quantity <= 5 && 'bg-red',
-                          n.quantity > 5 && n.quantity <= 25 && 'bg-orange',
-                          n.quantity > 25 && 'bg-green'
-                        )}
+                      <DeleteIcon
+                        sx={{
+                          color: "red",
+                        }}
                       />
-                    </TableCell>
-
-                    <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-                      {n.active ? (
-                        <FuseSvgIcon className="text-green" size={20}>
-                          heroicons-outline:check-circle
-                        </FuseSvgIcon>
-                      ) : (
-                        <FuseSvgIcon className="text-red" size={20}>
-                          heroicons-outline:minus-circle
-                        </FuseSvgIcon>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                    </IconButton>
+                    <IconButton
+                      aria-label="edit"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        handleRedirectToProduct(product?.id);
+                      }}
+                    >
+                      <EditIcon
+                        sx={{
+                          color: "blue",
+                        }}
+                      />
+                    </IconButton>
+                    <IconButton
+                      arial-label="view-product"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        handleRedirectToProduct(product?.id);
+                      }}
+                    >
+                      <VisibilityIcon
+                        sx={{
+                          color: "gray",
+                        }}
+                      />
+                    </IconButton>
+                  </Stack>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
-      </FuseScrollbars>
-
-      <TablePagination
-        className="shrink-0 border-t-1"
-        component="div"
-        count={data.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        backIconButtonProps={{
-          'aria-label': 'Previous Page',
-        }}
-        nextIconButtonProps={{
-          'aria-label': 'Next Page',
-        }}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      </TableContainer>
     </div>
   );
 }

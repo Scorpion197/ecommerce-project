@@ -1,42 +1,44 @@
-import { orange } from '@mui/material/colors';
-import { lighten, styled } from '@mui/material/styles';
-import clsx from 'clsx';
-import FuseUtils from '@fuse/utils';
-import { Controller, useFormContext } from 'react-hook-form';
-import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
-import Box from '@mui/material/Box';
+import React, { useState, useEffect } from "react";
+import { orange } from "@mui/material/colors";
+import { lighten, styled } from "@mui/material/styles";
+import clsx from "clsx";
+import FuseUtils from "@fuse/utils";
+import { Controller, useFormContext } from "react-hook-form";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import Box from "@mui/material/Box";
+import axios from "axios";
 
-const Root = styled('div')(({ theme }) => ({
-  '& .productImageFeaturedStar': {
-    position: 'absolute',
+const Root = styled("div")(({ theme }) => ({
+  "& .productImageFeaturedStar": {
+    position: "absolute",
     top: 0,
     right: 0,
     color: orange[400],
     opacity: 0,
   },
 
-  '& .productImageUpload': {
-    transitionProperty: 'box-shadow',
+  "& .productImageUpload": {
+    transitionProperty: "box-shadow",
     transitionDuration: theme.transitions.duration.short,
     transitionTimingFunction: theme.transitions.easing.easeInOut,
   },
 
-  '& .productImageItem': {
-    transitionProperty: 'box-shadow',
+  "& .productImageItem": {
+    transitionProperty: "box-shadow",
     transitionDuration: theme.transitions.duration.short,
     transitionTimingFunction: theme.transitions.easing.easeInOut,
-    '&:hover': {
-      '& .productImageFeaturedStar': {
+    "&:hover": {
+      "& .productImageFeaturedStar": {
         opacity: 0.8,
       },
     },
-    '&.featured': {
-      pointerEvents: 'none',
+    "&.featured": {
+      pointerEvents: "none",
       boxShadow: theme.shadows[3],
-      '& .productImageFeaturedStar': {
+      "& .productImageFeaturedStar": {
         opacity: 1,
       },
-      '&:hover .productImageFeaturedStar': {
+      "&:hover .productImageFeaturedStar": {
         opacity: 1,
       },
     },
@@ -44,10 +46,41 @@ const Root = styled('div')(({ theme }) => ({
 }));
 
 function ProductImagesTab(props) {
+  const [image, setImage] = useState(null);
   const methods = useFormContext();
   const { control, watch } = methods;
 
-  const images = watch('images');
+  const handleImageChange = (event) => {
+    event.preventDefault();
+    setImage(event.target.files[0]);
+  };
+
+  const handleImageSubmit = async (event) => {
+    event.preventDefault();
+    console.log("submitted");
+    const token = localStorage.getItem("token");
+    const endpoint = "http://localhost:8000/add-product/";
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+        "content-type": "multipart/form-data",
+      },
+    };
+    let formData = new FormData();
+
+    console.log("image inside function: ", image);
+    formData.append("image", image);
+    console.log("Form data: ", formData);
+    axios
+      .post(endpoint, formData, requestConfig)
+      .then((res) => {
+        console.log("image uploaded successfully");
+      })
+      .catch((err) => {
+        console.log("Error while uploading image");
+      });
+  };
+  const images = watch("images");
 
   return (
     <Root>
@@ -59,11 +92,16 @@ function ProductImagesTab(props) {
             <Box
               sx={{
                 backgroundColor: (theme) =>
-                  theme.palette.mode === 'light'
+                  theme.palette.mode === "light"
                     ? lighten(theme.palette.background.default, 0.4)
                     : lighten(theme.palette.background.default, 0.02),
+                display: "flex",
+                flexDirection: "row",
               }}
               component="label"
+              onSubmit={(event) => {
+                handleImageSubmit(event);
+              }}
               htmlFor="button-file"
               className="productImageUpload flex items-center justify-center relative w-128 h-128 rounded-16 mx-12 mb-24 overflow-hidden cursor-pointer shadow hover:shadow-lg"
             >
@@ -72,33 +110,6 @@ function ProductImagesTab(props) {
                 className="hidden"
                 id="button-file"
                 type="file"
-                onChange={async (e) => {
-                  function readFileAsync() {
-                    return new Promise((resolve, reject) => {
-                      const file = e.target.files[0];
-                      if (!file) {
-                        return;
-                      }
-                      const reader = new FileReader();
-
-                      reader.onload = () => {
-                        resolve({
-                          id: FuseUtils.generateGUID(),
-                          url: `data:${file.type};base64,${btoa(reader.result)}`,
-                          type: 'image',
-                        });
-                      };
-
-                      reader.onerror = reject;
-
-                      reader.readAsBinaryString(file);
-                    });
-                  }
-
-                  const newImage = await readFileAsync();
-
-                  onChange([newImage, ...value]);
-                }}
               />
               <FuseSvgIcon size={32} color="action">
                 heroicons-outline:upload
@@ -106,29 +117,24 @@ function ProductImagesTab(props) {
             </Box>
           )}
         />
-        <Controller
-          name="featuredImageId"
-          control={control}
-          defaultValue=""
-          render={({ field: { onChange, value } }) =>
-            images.map((media) => (
-              <div
-                onClick={() => onChange(media.id)}
-                onKeyDown={() => onChange(media.id)}
-                role="button"
-                tabIndex={0}
-                className={clsx(
-                  'productImageItem flex items-center justify-center relative w-128 h-128 rounded-16 mx-12 mb-24 overflow-hidden cursor-pointer outline-none shadow hover:shadow-lg',
-                  media.id === value && 'featured'
-                )}
-                key={media.id}
-              >
-                <FuseSvgIcon className="productImageFeaturedStar">heroicons-solid:star</FuseSvgIcon>
-                <img className="max-w-none w-auto h-full" src={media.url} alt="product" />
-              </div>
-            ))
-          }
-        />
+        {images?.map((image) => (
+          <div
+            role="button"
+            className={clsx(
+              "productImageItem flex items-center justify-center relative w-128 h-128 rounded-16 mx-12 mb-24 overflow-hidden cursor-pointer outline-none shadow hover:shadow-lg"
+            )}
+            key={image?.id}
+          >
+            <FuseSvgIcon className="productImageFeaturedStar">
+              heroicons-solid:star
+            </FuseSvgIcon>
+            <img
+              className="max-w-none w-auto h-full"
+              src={`http://localhost:8000${image?.image}`}
+              alt="product"
+            />
+          </div>
+        ))}
       </div>
     </Root>
   );
