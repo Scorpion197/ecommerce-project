@@ -57,36 +57,34 @@ const productSlice = createSlice({
         payload: {
           id: FuseUtils.generateGUID(),
           name: "",
-          handle: "",
-          description: "",
-          categories: [],
-          tags: [],
-          images: [],
-          priceTaxExcl: 0,
-          priceTaxIncl: 0,
-          taxRate: 0,
-          comparedPrice: 0,
-          quantity: 0,
-          sku: "",
-          width: "",
-          height: "",
-          depth: "",
-          weight: "",
-          extraShippingFee: 0,
-          active: true,
+          categorie:"",
+          color:"",
+          barcode:"",
+          sku:"",
+          quantity:0,
+          price:0,
+          images:[]
+
         },
       }),
     },
+    pushImageToProduct:(state,action)=>{
+      state.images.push(action.payload)
+    }
   },
   extraReducers: {
-    [getProduct.fulfilled]: (state, action) => action.payload,
+    [getProduct.fulfilled]: (state, action) =>{ 
+    
+      state = {...state,...action.payload}
+      
+    },
     [addNewProduct.fulfilled]: (state, action) => action.payload,
     [saveProduct.fulfilled]: (state, action) => action.payload,
     [removeProduct.fulfilled]: (state, action) => null,
   },
 });
 
-export const { newProduct, resetProduct } = productSlice.actions;
+export const { newProduct, resetProduct,pushImageToProduct } = productSlice.actions;
 
 export const selectProduct = ({ eCommerceApp }) => eCommerceApp.product;
 

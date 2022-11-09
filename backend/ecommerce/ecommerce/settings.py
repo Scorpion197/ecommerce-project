@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
 ]
 
+
 SITE_ID = 1
 AUTH_USER_MODEL = "ecommerce_app.UserAccount"
 REST_AUTH_REGISTER_SERIALIZERS = {

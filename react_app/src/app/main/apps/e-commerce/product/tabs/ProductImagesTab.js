@@ -7,6 +7,8 @@ import { Controller, useFormContext } from "react-hook-form";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import Box from "@mui/material/Box";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { pushImageToProduct } from "../../store/productSlice";
 
 const Root = styled("div")(({ theme }) => ({
   "& .productImageFeaturedStar": {
@@ -49,6 +51,7 @@ function ProductImagesTab(props) {
   const [image, setImage] = useState(null);
   const methods = useFormContext();
   const { control, watch } = methods;
+  const dispatch = useDispatch();
 
   const handleImageChange = (event) => {
     event.preventDefault();
@@ -58,27 +61,29 @@ function ProductImagesTab(props) {
   const handleImageSubmit = async (event) => {
     event.preventDefault();
     console.log("submitted");
-    const token = localStorage.getItem("token");
-    const endpoint = "http://localhost:8000/add-product/";
-    const requestConfig = {
-      headers: {
-        Authorization: "Token " + token,
-        "content-type": "multipart/form-data",
-      },
-    };
-    let formData = new FormData();
+    // const token = localStorage.getItem("token");
+    // const endpoint = "http://localhost:8000/add-product/";
+    // const requestConfig = {
+    //   headers: {
+    //     Authorization: "Token " + token,
+    //     "content-type": "multipart/form-data",
+    //   },
+    // };
+    // let formData = new FormData();
 
-    console.log("image inside function: ", image);
-    formData.append("image", image);
-    console.log("Form data: ", formData);
-    axios
-      .post(endpoint, formData, requestConfig)
-      .then((res) => {
-        console.log("image uploaded successfully");
-      })
-      .catch((err) => {
-        console.log("Error while uploading image");
-      });
+    // console.log("image inside function: ", image);
+    // formData.append("image", image);
+    // console.log("Form data: ", formData);
+    // axios
+    //   .post(endpoint, formData, requestConfig)
+    //   .then((res) => {
+    //     console.log("image uploaded successfully");
+    //   })
+    //   .catch((err) => {
+    //     console.log("Error while uploading image");
+    //   });
+
+  dispatch(pushImageToProduct("Julian Wan.jpg"))
   };
   const images = watch("images");
 
@@ -110,6 +115,7 @@ function ProductImagesTab(props) {
                 className="hidden"
                 id="button-file"
                 type="file"
+                onChange={(e)=>handleImageSubmit(e)}
               />
               <FuseSvgIcon size={32} color="action">
                 heroicons-outline:upload
@@ -129,8 +135,8 @@ function ProductImagesTab(props) {
               heroicons-solid:star
             </FuseSvgIcon>
             <img
-              className="max-w-none w-auto h-full"
-              src={`http://localhost:8000${image?.image}`}
+              className="max-w-none w-auto h-full object-contain"
+              src={image}
               alt="product"
             />
           </div>

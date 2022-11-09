@@ -33,6 +33,22 @@ const schema = yup.object().shape({
     .string()
     .required("You must enter a product name")
     .min(5, "The product name must be at least 5 characters"),
+  categorie:yup
+      .string()
+      .required(),
+  price:yup
+      .number()
+      .required(),
+  barcode:yup
+      .string()
+      .required(),
+  color:yup
+      .string()
+      .required(),
+  sku:yup
+      .string()
+      .required()
+
 });
 
 function Product(props) {
@@ -44,11 +60,21 @@ function Product(props) {
   const [noProduct, setNoProduct] = useState(false);
   const methods = useForm({
     mode: "onChange",
-    defaultValues: {},
+    defaultValues: {
+
+    },
     resolver: yupResolver(schema),
   });
-  const { reset, watch, control, onChange, formState } = methods;
+  const { reset, watch, control, onChange, formState, handleSubmit } = methods;
   const form = watch();
+  const {
+    name,
+    categorie,
+    price,
+    barcode,
+    color,
+    sku
+  } = formState;
 
   useDeepCompareEffect(() => {
     function updateProductState() {

@@ -13,7 +13,7 @@ from datetime import datetime
 import pytz
 
 utc = pytz.UTC
-
+  
 
 class CustomVerifyEmailSerializer(VerifyEmailSerializer):
     def get_email_options(self):
