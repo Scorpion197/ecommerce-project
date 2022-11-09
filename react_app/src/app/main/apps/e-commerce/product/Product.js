@@ -33,21 +33,28 @@ const schema = yup.object().shape({
     .string()
     .required("You must enter a product name")
     .min(5, "The product name must be at least 5 characters"),
-  categorie:yup
+  category:yup
       .string()
       .required(),
   price:yup
       .number()
-      .required(),
+      .required("this field is required"),
   barcode:yup
       .string()
-      .required(),
+      .required("this field is required"),
   color:yup
       .string()
-      .required(),
+      .required("this field is required"),
   sku:yup
       .string()
-      .required()
+      .required("this field is required"),
+  quantity:yup
+    .number()
+    .required("this field is required"),
+  weight:yup
+      .number()
+      .required("this field is required")
+
 
 });
 
@@ -61,7 +68,14 @@ function Product(props) {
   const methods = useForm({
     mode: "onChange",
     defaultValues: {
-
+      name: "asfsaffsa",
+      category:"fassf",
+      color:"fassf",
+      barcode:"safasf",
+      sku:"fassfs",
+      quantity:0,
+      weight:0,
+      price:0,
     },
     resolver: yupResolver(schema),
   });

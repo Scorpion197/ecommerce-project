@@ -1,12 +1,20 @@
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { Controller, useFormContext } from "react-hook-form";
+import ReactHookFormSelect from "../../shared/ReactHookFormSelect";
+import { MenuItem } from "@mui/material";
 
-function BasicInfoTab(props) {
+function BasicInfoTab({product}) {
   const methods = useFormContext();
-  const { control, formState } = methods;
+  const { control, formState ,getValues} = methods;
   const { errors } = formState;
 
+  const categories = product?.categories || [];
+  const getRandomCategory = ()=>{
+    if(categories.length  === 0 ) return "";
+    
+    return product.categories[Math.floor(Math.random()*(product.categories.length -1))]
+  }
   return (
     <div>
       <Controller
@@ -27,8 +35,28 @@ function BasicInfoTab(props) {
           />
         )}
       />
-      <Controller
+      <ReactHookFormSelect
         name="category"
+        control={control}
+        className="mt-8 mb-16"
+        defaultValue={getRandomCategory()}
+        label="Category"
+        variant="outlined"
+        margin="normal"
+
+      >
+        {
+          categories.map((c,index)=>{
+            return (
+              <MenuItem key={index} value={c}>{c}</MenuItem>
+            )
+          })
+        }
+        
+      </ReactHookFormSelect>
+    
+      <Controller
+        name="color"
         control={control}
         render={({ field }) => (
           <TextField
@@ -37,9 +65,9 @@ function BasicInfoTab(props) {
             error={!!errors.name}
             required
             helperText={errors?.name?.message}
-            label="Category"
+            label="Color"
             autoFocus
-            id="category"
+            id="color"
             variant="outlined"
             fullWidth
           />

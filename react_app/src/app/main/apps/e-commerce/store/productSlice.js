@@ -7,9 +7,10 @@ const API_URL = process.env.REACT_APP_BACKEND_API_URL;
 export const getProduct = createAsyncThunk(
   "eCommerceApp/product/getProduct",
   async (productId) => {
-    const response = await API.fetchOneProduct(productId);
-    console.log("response: ", response);
-    return response;
+    const product = await API.fetchOneProduct(productId);
+    const categories = await API.fetchProductCategories();
+    console.log("getProduct",{categories,...product})
+    return {categories,...product};
   }
 );
 
@@ -39,44 +40,47 @@ export const saveProduct = createAsyncThunk(
 );
 
 export const addNewProduct = createAsyncThunk(
-  "ecommerceApp/product/newProduct",
+  "ecommerceApp/product/addNewProduct",
   async (productData) => {
     const response = await API.addNewProduct(productData);
     console.log("response: ", response);
     return response;
   }
 );
+
+export const newProduct = createAsyncThunk(
+  "ecommerceApp/product/newProduct",
+  async ()=>{
+    const categories = await API.fetchProductCategories();
+    console.log("response: ", response);
+    return {
+        id: FuseUtils.generateGUID(),
+        name: "",
+        category:"",
+        color:"",
+        barcode:"",
+        sku:"",
+        quantity:0,
+        weight:0,
+        price:0,
+        categories
+    };
+  }
+)
 const productSlice = createSlice({
   name: "eCommerceApp/product",
   initialState: null,
   reducers: {
     resetProduct: () => null,
-    newProduct: {
-      reducer: (state, action) => action.payload,
-      prepare: (event) => ({
-        payload: {
-          id: FuseUtils.generateGUID(),
-          name: "",
-          categorie:"",
-          color:"",
-          barcode:"",
-          sku:"",
-          quantity:0,
-          price:0,
-          images:[]
-
-        },
-      }),
-    },
     pushImageToProduct:(state,action)=>{
       state.images.push(action.payload)
     }
   },
   extraReducers: {
     [getProduct.fulfilled]: (state, action) =>{ 
-    
+      alert("")
       state = {...state,...action.payload}
-      
+      return state;
     },
     [addNewProduct.fulfilled]: (state, action) => action.payload,
     [saveProduct.fulfilled]: (state, action) => action.payload,
@@ -84,7 +88,7 @@ const productSlice = createSlice({
   },
 });
 
-export const { newProduct, resetProduct,pushImageToProduct } = productSlice.actions;
+export const { resetProduct,pushImageToProduct } = productSlice.actions;
 
 export const selectProduct = ({ eCommerceApp }) => eCommerceApp.product;
 

@@ -13,7 +13,7 @@ function ProductHeader(props) {
   const dispatch = useDispatch();
   const methods = useFormContext();
   const { formState, watch, getValues } = methods;
-  const { isValid, dirtyFields } = formState;
+  const { isValid, dirtyFields,errors } = formState;
   const featuredImageId = watch("featuredImageId");
   const images = watch("images");
   const name = watch("name");
@@ -100,7 +100,7 @@ function ProductHeader(props) {
           className="whitespace-nowrap mx-4"
           variant="contained"
           color="secondary"
-          disabled={_.isEmpty(dirtyFields) || !isValid}
+          disabled={!isValid || _.isEmpty(dirtyFields)}
           onClick={handleSaveProduct}
         >
           Save

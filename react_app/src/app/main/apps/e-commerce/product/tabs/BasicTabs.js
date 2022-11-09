@@ -60,7 +60,7 @@ export default function BasicTabs(props) {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <BasicInfoTab />
+        <BasicInfoTab product={props?.product} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <ProductImagesTab product={props?.product} />

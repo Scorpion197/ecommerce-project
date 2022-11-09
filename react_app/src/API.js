@@ -76,6 +76,15 @@ const API = {
     const response = await axios.put(endpoint, formData, requestConfig);
     return response;
   },
+
+  fetchProductCategories:async ()=>{
+    return new Promise((resolve,reject)=>{
+      setTimeout(()=>{
+        resolve(["categorie1","categorie2","categorie3"])
+      },3000)
+    })
+  }
 };
+
 
 export default API;
