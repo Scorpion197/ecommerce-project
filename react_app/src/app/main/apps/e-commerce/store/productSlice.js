@@ -78,7 +78,6 @@ const productSlice = createSlice({
   },
   extraReducers: {
     [getProduct.fulfilled]: (state, action) =>{ 
-      alert("")
       state = {...state,...action.payload}
       return state;
     },

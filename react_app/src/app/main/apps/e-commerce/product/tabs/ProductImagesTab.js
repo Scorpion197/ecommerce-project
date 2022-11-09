@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { pushImageToProduct } from "../../store/productSlice";
+import { CircularProgress } from "@mui/material";
 
 const Root = styled("div")(({ theme }) => ({
   "& .productImageFeaturedStar": {
@@ -48,16 +49,20 @@ const Root = styled("div")(({ theme }) => ({
 }));
 
 function ProductImagesTab(props) {
-  const [image, setImage] = useState(null);
   const methods = useFormContext();
   const { control, watch } = methods;
   const dispatch = useDispatch();
+  const [isUploading,setIsUploading] = useState(false)
 
-  const handleImageChange = (event) => {
-    event.preventDefault();
-    setImage(event.target.files[0]);
-  };
 
+
+  const uploadImage = ()=>{
+    return new Promise((resolve,reject)=>{
+      setTimeout(()=>{
+        resolve("Julian Wan.jpg")
+      },4000)
+    })
+  }
   const handleImageSubmit = async (event) => {
     event.preventDefault();
     console.log("submitted");
@@ -83,7 +88,10 @@ function ProductImagesTab(props) {
     //     console.log("Error while uploading image");
     //   });
 
-  dispatch(pushImageToProduct("Julian Wan.jpg"))
+  setIsUploading(true)
+  const imageUrl = await uploadImage();
+  setIsUploading(false)
+  dispatch(pushImageToProduct(imageUrl))
   };
   const images = watch("images");
 
@@ -117,9 +125,16 @@ function ProductImagesTab(props) {
                 type="file"
                 onChange={(e)=>handleImageSubmit(e)}
               />
-              <FuseSvgIcon size={32} color="action">
-                heroicons-outline:upload
-              </FuseSvgIcon>
+              {
+                isUploading?(
+                  <CircularProgress size={32}/>
+                ):(
+                  <FuseSvgIcon size={32} color="action">
+                    heroicons-outline:upload
+                  </FuseSvgIcon>
+                )
+              }
+             
             </Box>
           )}
         />
