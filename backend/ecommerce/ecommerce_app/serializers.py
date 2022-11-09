@@ -13,7 +13,7 @@ from datetime import datetime
 import pytz
 
 utc = pytz.UTC
-  
+
 
 class CustomVerifyEmailSerializer(VerifyEmailSerializer):
     def get_email_options(self):
@@ -190,6 +190,12 @@ class OrderSerializer(serializers.ModelSerializer):
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
+        fields = "__all__"
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
         fields = "__all__"
 
 

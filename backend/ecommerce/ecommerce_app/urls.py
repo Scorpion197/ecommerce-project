@@ -27,6 +27,8 @@ schema_view = get_schema_view(
 router = routers.DefaultRouter()
 router.register("orders", OrderViewSet, basename="manage_orders")
 router.register("subscriptions", SubscriptionViewSet, basename="manage_subscriptions")
+router.register("categories", CategoryViewSet, basename="manage_categories")
+
 # Auth routes
 urlpatterns = [
     path("register/", RegisterView.as_view()),
