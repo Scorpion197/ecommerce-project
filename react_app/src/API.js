@@ -78,11 +78,16 @@ const API = {
   },
 
   fetchProductCategories:async ()=>{
-    return new Promise((resolve,reject)=>{
-      setTimeout(()=>{
-        resolve(["categorie1","categorie2","categorie3"])
-      },3000)
-    })
+    const token = localStorage.getItem("token");
+    const endpoint = API_URL + `/categories/`;
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+      },
+    };
+
+    const response = await (await fetch(endpoint, requestConfig)).json();
+    return response.map(el=>el.name);
   }
 };
 
