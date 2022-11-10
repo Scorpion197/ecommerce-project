@@ -46,6 +46,11 @@ class ProductViewSet(APIView):
             sku=request.data["sku"],
         )
 
+        for image in request.data["images"]:
+            product_image = ProductImage.objects.create(
+                product=new_product, image=image
+            )
+
         serializer = ProductSerializer(new_product)
         return Response(serializer.data)
 
