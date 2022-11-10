@@ -29,22 +29,12 @@ class ProductViewSet(APIView):
 
     def put(self, request, *args, **kwargs):
 
-        try:
-            product_object = Product.objects.get(id=request.data["id"])
-            product_object.name = request.data["name"]
-            product_object.price = request.data["price"]
-            product_object.color = request.data["color"]
-            product_object.quantity = request.data["quantity"]
-            product_object.barcode = request.data["barcode"]
-            product_object.weight = request.data["weight"]
-            product_object.sku = request.data["sku"]
-
-            product_object.save()
-
-            serializer = ProductSerializer(product_object)
-            return Response(serializer.data)
-        except Product.DoesNotExist:
-            return Response({"message": "Product doesn't not exist"})
+        product_image_serializer = ProductImageSerializer(data=request.data)
+        if product_image_serializer.is_valid():
+            product_image_serializer.save()
+            return Response(product_image_serializer.data)
+        else:
+            return Response(product_image_serializer.errors)
 
     def post(self, request, *args, **kwargs):
         new_product = Product.objects.create(

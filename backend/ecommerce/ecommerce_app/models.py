@@ -84,7 +84,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 
 
 def upload_product_image(instance, filename):
-    return "/".join(["product_image", str(instance.id) + "/", filename])
+    return "/".join(["product_image", str(instance.id), filename])
 
 
 class SizeChoices(Enum):
