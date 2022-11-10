@@ -68,14 +68,7 @@ function Product(props) {
   const methods = useForm({
     mode: "onChange",
     defaultValues: {
-      name: "asfsaffsa",
-      category:"fassf",
-      color:"fassf",
-      barcode:"safasf",
-      sku:"fassfs",
-      quantity:0,
-      weight:0,
-      price:0,
+    ...product
     },
     resolver: yupResolver(schema),
   });

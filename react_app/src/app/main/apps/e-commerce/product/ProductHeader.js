@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import _ from "@lodash";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import { removeProduct, saveProduct } from "../store/productSlice";
+import { addNewProduct, removeProduct, saveProduct } from "../store/productSlice";
 
 function ProductHeader(props) {
   const dispatch = useDispatch();
@@ -22,8 +22,9 @@ function ProductHeader(props) {
 
   function handleSaveProduct() {
 
-    // dispatch(saveProduct(getValues()));
-    console.log("t10",saveProduct(getValues()));
+    const v = getValues()
+    dispatch(addNewProduct({...v}));
+    console.log("t10",v)
   }
 
   function handleRemoveProduct() {
