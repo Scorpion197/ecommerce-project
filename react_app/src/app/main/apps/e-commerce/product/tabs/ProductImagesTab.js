@@ -52,49 +52,43 @@ function ProductImagesTab(props) {
   const methods = useFormContext();
   const { control, watch } = methods;
   const dispatch = useDispatch();
-  const [isUploading,setIsUploading] = useState(false)
+  const [isUploading, setIsUploading] = useState(false);
 
-
-
-  const uploadImage = ()=>{
-    return new Promise((resolve,reject)=>{
-      setTimeout(()=>{
-        resolve("Julian Wan.jpg")
-      },4000)
-    })
-  }
+  const uploadImage = () => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve("Julian Wan.jpg");
+      }, 4000);
+    });
+  };
   const handleImageSubmit = async (event) => {
     event.preventDefault();
     console.log("submitted");
     const token = localStorage.getItem("token");
-    const endpoint = "http://localhost:8000/add-product/";
+    const endpoint = "http://localhost:8000/products/";
     const requestConfig = {
       headers: {
         Authorization: "Token " + token,
         "content-type": "multipart/form-data",
       },
     };
-    const imageFile = event.target.files[0]
+    const imageFile = event.target.files[0];
     let formData = new FormData();
 
     formData.append("image", imageFile);
-    setIsUploading(true)
+    setIsUploading(true);
     axios
       .put(endpoint, formData, requestConfig)
       .then((res) => {
-        
-        console.log("image uploaded successfully",res.data.image);
-        setIsUploading(false)
+        console.log("image uploaded successfully", res.data.image);
+        setIsUploading(false);
 
-         dispatch(pushImageToProduct(res.data.image))
-
+        dispatch(pushImageToProduct(res.data.image));
       })
       .catch((err) => {
         console.log("Error while uploading image");
-        setIsUploading(false)
+        setIsUploading(false);
       });
-
-
   };
   const images = watch("images");
 
@@ -126,18 +120,15 @@ function ProductImagesTab(props) {
                 className="hidden"
                 id="button-file"
                 type="file"
-                onChange={(e)=>handleImageSubmit(e)}
+                onChange={(e) => handleImageSubmit(e)}
               />
-              {
-                isUploading?(
-                  <CircularProgress size={32}/>
-                ):(
-                  <FuseSvgIcon size={32} color="action">
-                    heroicons-outline:upload
-                  </FuseSvgIcon>
-                )
-              }
-             
+              {isUploading ? (
+                <CircularProgress size={32} />
+              ) : (
+                <FuseSvgIcon size={32} color="action">
+                  heroicons-outline:upload
+                </FuseSvgIcon>
+              )}
             </Box>
           )}
         />

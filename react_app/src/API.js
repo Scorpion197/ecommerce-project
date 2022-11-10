@@ -77,7 +77,7 @@ const API = {
     return response;
   },
 
-  fetchProductCategories:async ()=>{
+  fetchProductCategories: async () => {
     const token = localStorage.getItem("token");
     const endpoint = API_URL + `/categories/`;
     const requestConfig = {
@@ -87,11 +87,11 @@ const API = {
     };
 
     const response = await (await fetch(endpoint, requestConfig)).json();
-    return response.map(el=>el.name);
+    return response.map((el) => el.name);
   },
-  addNewProduct:async (productData)=>{
+  addNewProduct: async (productData) => {
     const token = localStorage.getItem("token");
-    const endpoint = API_URL + "/add-product/";
+    const endpoint = API_URL + "/products/";
     const requestConfig = {
       headers: {
         Authorization: "Token " + token,
@@ -110,8 +110,7 @@ const API = {
     formData.append("images", productData.images);
     const response = await axios.post(endpoint, formData, requestConfig);
     return response;
-  }
+  },
 };
-
 
 export default API;
