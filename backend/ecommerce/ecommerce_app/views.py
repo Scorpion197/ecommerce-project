@@ -60,6 +60,10 @@ class ProductViewSet(APIView):
             return Response(product_image_serializer.errors)
 
     def post(self, request, *args, **kwargs):
+
+        category, created = Category.objects.get_or_create(
+            name=request.data["category"]
+        )
         new_product = Product.objects.create(
             name=request.data["name"],
             price=request.data["price"],
@@ -67,6 +71,7 @@ class ProductViewSet(APIView):
             barcode=request.data["barcode"],
             weight=request.data["weight"],
             sku=request.data["sku"],
+            category=category,
         )
 
         for image in request.data["images"]:

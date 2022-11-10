@@ -168,7 +168,15 @@ class CustomLoginSerializer(LoginSerializer):
         return None
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
+
+
 class ProductSerializer(serializers.ModelSerializer):
+    category = serializers.StringRelatedField(many=False)
+
     class Meta:
         model = Product
         fields = "__all__"
@@ -193,12 +201,6 @@ class ProductImageSerializer(serializers.ModelSerializer):
         fields = [
             "image",
         ]
-
-
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = "__all__"
 
 
 class VerifyEmailSerializer(serializers.Serializer):
