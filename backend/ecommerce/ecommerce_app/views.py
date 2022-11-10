@@ -83,6 +83,43 @@ class ProductViewSet(APIView):
         return Response(serializer.data)
 
 
+class ProductDetailView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk):
+        try:
+            return Product.objects.get(pk=pk)
+        except Product.DoesNotExist:
+            return Response(
+                {"message": "Product not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+    def get(self, request, pk):
+        product = self.get_object(pk)
+        product_images = ProductImage.objects.filter(product=product)
+        images_array = []
+
+        for image in product_images:
+            images_array.append(str(image.image))
+
+        response_data = []
+        serializer = ProductSerializer(product)
+        response_data.append(
+            {
+                "id": serializer.data["id"],
+                "name": serializer.data["name"],
+                "price": serializer.data["price"],
+                "color": serializer.data["color"],
+                "quantity": serializer.data["quantity"],
+                "created_at": serializer.data["created_at"],
+                "category": Category.objects.get(id=product.category.id).name,
+                "images": images_array,
+            }
+        )
+        return JsonResponse(response_data, safe=False, status=200)
+
+
 @permission_classes([IsAuthenticated])
 @api_view(["GET"])
 def get_one_product(request, product_id=None):

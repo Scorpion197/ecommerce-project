@@ -67,6 +67,7 @@ urlpatterns = [
     ),
     path("get-subscriptions/", get_subscriptions, name="test_subscriptions_function"),
     path("products/", ProductViewSet.as_view(), name="manage_products"),
+    path("products/<int:pk>/", ProductDetailView.as_view(), name="manage_product"),
 ]
 
 urlpatterns += router.urls
