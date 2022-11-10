@@ -42,8 +42,9 @@ export const saveProduct = createAsyncThunk(
 export const addNewProduct = createAsyncThunk(
   "ecommerceApp/product/addNewProduct",
   async (productData) => {
+    alert(JSON.stringify(productData)+"")
     const response = await API.addNewProduct(productData);
-    console.log("response: ", response);
+    console.log("ecommerceApp/product/addNewProduct: ",productData, response);
     return response;
   }
 );
@@ -52,18 +53,24 @@ export const newProduct = createAsyncThunk(
   "ecommerceApp/product/newProduct",
   async ()=>{
     const categories = await API.fetchProductCategories();
-    console.log("response: ", response);
+    console.log("response: ", categories);
+    const getRandomCategory = ()=>{
+      if(categories.length  === 0 ) return "";
+      
+      return categories[Math.floor(Math.random()*(categories.length -1))]
+    }
     return {
         id: FuseUtils.generateGUID(),
-        name: "",
-        category:"",
-        color:"",
-        barcode:"",
-        sku:"",
+        name: "AJFSJSAFKJ",
+        category:getRandomCategory(),
+        color:"ASAFJAFS",
+        barcode:"FASKASFJ",
+        sku:"FASJSAF",
         quantity:0,
         weight:0,
         price:0,
-        categories
+        categories,
+        images:[]
     };
   }
 )
@@ -81,9 +88,10 @@ const productSlice = createSlice({
       state = {...state,...action.payload}
       return state;
     },
-    [addNewProduct.fulfilled]: (state, action) => action.payload,
+    [addNewProduct.fulfilled]: (state, action) =>state,
     [saveProduct.fulfilled]: (state, action) => action.payload,
     [removeProduct.fulfilled]: (state, action) => null,
+    [newProduct.fulfilled]:(state,action)=>action.payload
   },
 });
 

@@ -66,32 +66,35 @@ function ProductImagesTab(props) {
   const handleImageSubmit = async (event) => {
     event.preventDefault();
     console.log("submitted");
-    // const token = localStorage.getItem("token");
-    // const endpoint = "http://localhost:8000/add-product/";
-    // const requestConfig = {
-    //   headers: {
-    //     Authorization: "Token " + token,
-    //     "content-type": "multipart/form-data",
-    //   },
-    // };
-    // let formData = new FormData();
+    const token = localStorage.getItem("token");
+    const endpoint = "http://localhost:8000/add-product/";
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+        "content-type": "multipart/form-data",
+      },
+    };
+    const imageFile = event.target.files[0]
+    let formData = new FormData();
 
-    // console.log("image inside function: ", image);
-    // formData.append("image", image);
-    // console.log("Form data: ", formData);
-    // axios
-    //   .post(endpoint, formData, requestConfig)
-    //   .then((res) => {
-    //     console.log("image uploaded successfully");
-    //   })
-    //   .catch((err) => {
-    //     console.log("Error while uploading image");
-    //   });
+    formData.append("image", imageFile);
+    setIsUploading(true)
+    axios
+      .put(endpoint, formData, requestConfig)
+      .then((res) => {
+        
+        console.log("image uploaded successfully",res.data.image);
+        setIsUploading(false)
 
-  setIsUploading(true)
-  const imageUrl = await uploadImage();
-  setIsUploading(false)
-  dispatch(pushImageToProduct(imageUrl))
+         dispatch(pushImageToProduct(res.data.image))
+
+      })
+      .catch((err) => {
+        console.log("Error while uploading image");
+        setIsUploading(false)
+      });
+
+
   };
   const images = watch("images");
 
@@ -151,7 +154,7 @@ function ProductImagesTab(props) {
             </FuseSvgIcon>
             <img
               className="max-w-none w-auto h-full object-contain"
-              src={image}
+              src={`http://localhost:8000${image}`}
               alt="product"
             />
           </div>

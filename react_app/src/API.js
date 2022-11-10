@@ -78,11 +78,38 @@ const API = {
   },
 
   fetchProductCategories:async ()=>{
-    return new Promise((resolve,reject)=>{
-      setTimeout(()=>{
-        resolve(["categorie1","categorie2","categorie3"])
-      },3000)
-    })
+    const token = localStorage.getItem("token");
+    const endpoint = API_URL + `/categories/`;
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+      },
+    };
+
+    const response = await (await fetch(endpoint, requestConfig)).json();
+    return response.map(el=>el.name);
+  },
+  addNewProduct:async (productData)=>{
+    const token = localStorage.getItem("token");
+    const endpoint = API_URL + "/add-product/";
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    let formData = new FormData();
+    formData.append("name", productData.name);
+    formData.append("price", productData.price);
+    formData.append("category", productData.category);
+    formData.append("color", productData.color);
+    formData.append("quantity", productData.quantity);
+    formData.append("barcode", productData.barcode);
+    formData.append("weight", productData.weight);
+    formData.append("sku", productData.sku);
+    formData.append("images", productData.images);
+    const response = await axios.post(endpoint, formData, requestConfig);
+    return response;
   }
 };
 

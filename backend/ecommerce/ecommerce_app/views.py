@@ -51,7 +51,7 @@ class ProductViewSet(APIView):
         return JsonResponse(response_data, safe=False, status=200)
 
     def put(self, request, *args, **kwargs):
-
+        print(request.data)
         product_image_serializer = ProductImageSerializer(data=request.data)
         if product_image_serializer.is_valid():
             product_image_serializer.save()
