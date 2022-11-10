@@ -103,9 +103,8 @@ class ProductDetailView(APIView):
         for image in product_images:
             images_array.append(str(image.image))
 
-        response_data = []
         serializer = ProductSerializer(product)
-        response_data.append(
+        return JsonResponse(
             {
                 "id": serializer.data["id"],
                 "name": serializer.data["name"],
@@ -113,11 +112,28 @@ class ProductDetailView(APIView):
                 "color": serializer.data["color"],
                 "quantity": serializer.data["quantity"],
                 "created_at": serializer.data["created_at"],
+                "weight": serializer.data["weight"],
+                "barcode": serializer.data["barcode"],
+                "sku": serializer.data["sku"],
                 "category": Category.objects.get(id=product.category.id).name,
                 "images": images_array,
-            }
+            },
+            safe=False,
+            status=200,
         )
-        return JsonResponse(response_data, safe=False, status=200)
+
+
+class UploadImageView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        product_image_serializer = ProductImageSerializer(data=request.data)
+        if product_image_serializer.is_valid():
+            product_image_serializer.save()
+            return Response(product_image_serializer.data)
+        else:
+            return Response(product_image_serializer.errors)
 
 
 @permission_classes([IsAuthenticated])
