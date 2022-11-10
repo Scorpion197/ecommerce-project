@@ -137,7 +137,7 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, null=True, default=None
+        Product, on_delete=models.CASCADE, null=True, default=None, to_field="id"
     )
 
     image = models.ImageField(
