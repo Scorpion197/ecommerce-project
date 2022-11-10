@@ -188,11 +188,11 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
-    product = ProductSerializer(many=True, required=False)
-
     class Meta:
         model = ProductImage
-        fields = "__all__"
+        fields = [
+            "image",
+        ]
 
 
 class CategorySerializer(serializers.ModelSerializer):

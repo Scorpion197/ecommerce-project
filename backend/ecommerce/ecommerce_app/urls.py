@@ -28,7 +28,6 @@ router = routers.DefaultRouter()
 router.register("orders", OrderViewSet, basename="manage_orders")
 router.register("subscriptions", SubscriptionViewSet, basename="manage_subscriptions")
 router.register("categories", CategoryViewSet, basename="manage_categories")
-
 # Auth routes
 urlpatterns = [
     path("register/", RegisterView.as_view()),
@@ -67,9 +66,7 @@ urlpatterns = [
         r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
     ),
     path("get-subscriptions/", get_subscriptions, name="test_subscriptions_function"),
-    path("products/", get_products, name="get_products"),
-    path("product/<int:product_id>/", get_one_product, name="get_one_product"),
-    path("add-product/", ProductViewSet.as_view(), name="add_product"),
+    path("products/", ProductViewSet.as_view(), name="manage_products"),
 ]
 
 urlpatterns += router.urls

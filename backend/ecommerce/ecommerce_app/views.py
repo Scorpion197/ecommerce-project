@@ -23,9 +23,32 @@ utc = pytz.UTC
 
 class ProductViewSet(APIView):
     parser_classes = (MultiPartParser, FormParser)
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        pass
+        products = Product.objects.all()
+        response_data = []
+        for product in products:
+            product_images = ProductImage.objects.filter(product=product)
+            images_array = []
+            for image in product_images:
+                images_array.append(str(image.image))
+
+            serializer = ProductSerializer(product)
+
+            response_data.append(
+                {
+                    "id": serializer.data["id"],
+                    "name": serializer.data["name"],
+                    "price": serializer.data["price"],
+                    "color": serializer.data["color"],
+                    "quantity": serializer.data["quantity"],
+                    "created_at": serializer.data["created_at"],
+                    "category": Category.objects.get(id=product.category.id).name,
+                    "images": images_array,
+                }
+            )
+        return JsonResponse(response_data, safe=False, status=200)
 
     def put(self, request, *args, **kwargs):
 
@@ -53,31 +76,6 @@ class ProductViewSet(APIView):
 
         serializer = ProductSerializer(new_product)
         return Response(serializer.data)
-
-
-@permission_classes([IsAuthenticated])
-@api_view(["GET"])
-def get_products(request):
-    products = Product.objects.all()
-    response_data = []
-    for product in products:
-        product_images = ProductImage.objects.filter(product=product.id)
-
-        serializer = ProductSerializer(product)
-        product_image_serializer = ProductImageSerializer(product_images, many=True)
-        response_data.append(
-            {
-                "id": serializer.data["id"],
-                "name": serializer.data["name"],
-                "price": serializer.data["price"],
-                "color": serializer.data["color"],
-                "quantity": serializer.data["quantity"],
-                "created_at": serializer.data["created_at"],
-                "category": Category.objects.get(id=product.category.id).name,
-                "images": product_image_serializer.data,
-            }
-        )
-    return Response(response_data)
 
 
 @permission_classes([IsAuthenticated])
