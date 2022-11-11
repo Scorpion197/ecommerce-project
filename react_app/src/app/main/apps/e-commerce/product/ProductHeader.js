@@ -101,7 +101,7 @@ function ProductHeader(props) {
           className="whitespace-nowrap mx-4"
           variant="contained"
           color="secondary"
-          disabled={!isValid || _.isEmpty(dirtyFields)}
+          disabled={!isValid }
           onClick={handleSaveProduct}
         >
           Save

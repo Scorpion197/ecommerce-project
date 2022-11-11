@@ -24,7 +24,6 @@ import {
 import reducer from "../store";
 import ProductHeader from "./ProductHeader";
 import BasicTabs from "./tabs/BasicTabs";
-import Box from "@mui/material/Box";
 /**
  * Form Validation Schema
  */
@@ -55,7 +54,8 @@ const schema = yup.object().shape({
       .number()
       .required("this field is required"),
   images:yup
-    .array().of(yup.string()).min(1)
+    .array().min(1)
+    .required("an image at least is required")
 
 
 });
@@ -70,20 +70,13 @@ function Product(props) {
   const methods = useForm({
     mode: "onChange",
     defaultValues: {
-    ...product
+    ...product,
     },
     resolver: yupResolver(schema),
   });
-  const { reset, watch, control, onChange, formState, handleSubmit } = methods;
+  const { reset, watch, handleSubmit } = methods;
   const form = watch();
-  const {
-    name,
-    categorie,
-    price,
-    barcode,
-    color,
-    sku
-  } = formState;
+  
 
   useDeepCompareEffect(() => {
     function updateProductState() {

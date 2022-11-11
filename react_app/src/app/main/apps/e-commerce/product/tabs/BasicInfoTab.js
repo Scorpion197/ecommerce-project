@@ -2,7 +2,7 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { Controller, useFormContext } from "react-hook-form";
 import ReactHookFormSelect from "../../shared/ReactHookFormSelect";
-import { MenuItem } from "@mui/material";
+import { Alert, MenuItem } from "@mui/material";
 
 function BasicInfoTab({product}) {
   const methods = useFormContext();
@@ -17,6 +17,11 @@ function BasicInfoTab({product}) {
   }
   return (
     <div>
+      {
+        errors?.images && (
+            <Alert severity="error">{errors?.images.message}</Alert>
+        )
+      }
       <Controller
         name="name"
         control={control}

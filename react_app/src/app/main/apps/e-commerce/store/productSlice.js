@@ -79,6 +79,7 @@ const productSlice = createSlice({
   reducers: {
     resetProduct: () => null,
     pushImageToProduct:(state,action)=>{
+      if(!state.images) return state;
       state.images.push(action.payload)
     }
   },

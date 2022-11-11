@@ -9,7 +9,7 @@ import Box from "@mui/material/Box";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { pushImageToProduct } from "../../store/productSlice";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, TextField } from "@mui/material";
 
 const Root = styled("div")(({ theme }) => ({
   "& .productImageFeaturedStar": {
@@ -57,6 +57,7 @@ function ProductImagesTab(props) {
   console.log("props: ", props);
   const handleImageSubmit = async (event) => {
     event.preventDefault();
+
     console.log("submitted");
     const token = localStorage.getItem("token");
     const endpoint = "http://localhost:8000/upload-image/";
@@ -68,10 +69,10 @@ function ProductImagesTab(props) {
     };
     const imageFile = event.target.files[0];
     let formData = new FormData();
-
+    
     formData.append("image", imageFile);
-    formData.append("productId", localStorage.getItem("productId"));
     setIsUploading(true);
+    
     axios
       .post(endpoint, formData, requestConfig)
       .then((res) => {
@@ -93,7 +94,7 @@ function ProductImagesTab(props) {
         <Controller
           name="images"
           control={control}
-          render={({ field: { onChange, value } }) => (
+          render={({ field: { onChange,...others} }) => (
             <Box
               sx={{
                 backgroundColor: (theme) =>
@@ -104,18 +105,15 @@ function ProductImagesTab(props) {
                 flexDirection: "row",
               }}
               component="label"
-              onSubmit={(event) => {
-                handleImageSubmit(event);
-              }}
               htmlFor="button-file"
               className="productImageUpload flex items-center justify-center relative w-128 h-128 rounded-16 mx-12 mb-24 overflow-hidden cursor-pointer shadow hover:shadow-lg"
             >
-              <input
+              <TextField
                 accept="image/*"
                 className="hidden"
                 id="button-file"
                 type="file"
-                onChange={(e) => handleImageSubmit(e)}
+                onChange={(e) => {handleImageSubmit(e)}}
               />
               {isUploading ? (
                 <CircularProgress size={32} />
@@ -127,20 +125,20 @@ function ProductImagesTab(props) {
             </Box>
           )}
         />
-        {images?.map((image) => (
+        {images?.map((image,index) => (
           <div
             role="button"
             className={clsx(
               "productImageItem flex items-center justify-center relative w-128 h-128 rounded-16 mx-12 mb-24 overflow-hidden cursor-pointer outline-none shadow hover:shadow-lg"
             )}
-            key={image?.id}
+            key={image+index}
           >
             <FuseSvgIcon className="productImageFeaturedStar">
               heroicons-solid:star
             </FuseSvgIcon>
             <img
               className="max-w-none w-auto h-full object-contain"
-              src={`http://localhost:8000/media/${image}`}
+              src={`http://localhost:8000${image}`}
               alt="product"
             />
           </div>
