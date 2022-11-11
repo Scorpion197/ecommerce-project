@@ -16,7 +16,7 @@ const API = {
   },
 
   fetchOneProduct: async (productId) => {
-    const endpoint = API_URL + `/product/${productId}/`;
+    const endpoint = API_URL + `/products/${productId}/`;
     const token = localStorage.getItem("token");
     const requestConfig = {
       headers: {

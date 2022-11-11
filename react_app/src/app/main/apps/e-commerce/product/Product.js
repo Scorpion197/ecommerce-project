@@ -53,7 +53,9 @@ const schema = yup.object().shape({
     .required("this field is required"),
   weight:yup
       .number()
-      .required("this field is required")
+      .required("this field is required"),
+  images:yup
+    .array().of(yup.string()).min(1)
 
 
 });

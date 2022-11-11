@@ -106,6 +106,7 @@ function ProductHeader(props) {
         >
           Save
         </Button>
+        {JSON.stringify({errors,dirtyFields,isValid})}
       </motion.div>
     </div>
   );

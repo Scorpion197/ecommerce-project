@@ -65,7 +65,7 @@ function ProductImagesTab(props) {
     event.preventDefault();
     console.log("submitted");
     const token = localStorage.getItem("token");
-    const endpoint = "http://localhost:8000/products/";
+    const endpoint = "http://localhost:8000/upload-image/";
     const requestConfig = {
       headers: {
         Authorization: "Token " + token,
@@ -78,7 +78,7 @@ function ProductImagesTab(props) {
     formData.append("image", imageFile);
     setIsUploading(true);
     axios
-      .put(endpoint, formData, requestConfig)
+      .post(endpoint, formData, requestConfig)
       .then((res) => {
         console.log("image uploaded successfully", res.data.image);
         setIsUploading(false);
