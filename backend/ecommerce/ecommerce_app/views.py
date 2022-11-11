@@ -51,7 +51,8 @@ class ProductViewSet(APIView):
         return JsonResponse(response_data, safe=False, status=200)
 
     def put(self, request, *args, **kwargs):
-        print(request.data)
+
+        print("PUT IS HERE")
         product_image_serializer = ProductImageSerializer(data=request.data)
         if product_image_serializer.is_valid():
             product_image_serializer.save()
@@ -64,6 +65,7 @@ class ProductViewSet(APIView):
         category, created = Category.objects.get_or_create(
             name=request.data["category"]
         )
+
         new_product = Product.objects.create(
             name=request.data["name"],
             price=request.data["price"],
@@ -74,11 +76,12 @@ class ProductViewSet(APIView):
             category=category,
         )
 
-        for image in request.data["images"]:
-            product_image = ProductImage.objects.create(
-                product=new_product, image=image
-            )
+        # for image in request.data["images"]:
+        #    print(image)
+        #    image_object = ProductImage.objects.get(image=image, product=new_product)
+        #    image_object.save()
 
+        print(request.data)
         serializer = ProductSerializer(new_product)
         return Response(serializer.data)
 
@@ -128,39 +131,13 @@ class UploadImageView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+        print(request.data)
         product_image_serializer = ProductImageSerializer(data=request.data)
         if product_image_serializer.is_valid():
             product_image_serializer.save()
             return Response(product_image_serializer.data)
         else:
             return Response(product_image_serializer.errors)
-
-
-@permission_classes([IsAuthenticated])
-@api_view(["GET"])
-def get_one_product(request, product_id=None):
-    if product_id == None:
-        return Response({"error": "Product id should be provided"})
-
-    product = Product.objects.get(id=product_id)
-    product_serializer = ProductSerializer(product)
-    product_images = ProductImage.objects.filter(product=product.id)
-    product_image_serializer = ProductImageSerializer(product_images, many=True)
-    response_data = []
-    response_data.append(
-        {
-            "id": product.id,
-            "name": product.name,
-            "price": product.price,
-            "color": product.color,
-            "quantity": product.quantity,
-            "created_at": product_serializer.data["created_at"],
-            "category": Category.objects.get(id=product.category.id).name,
-            "images": product_image_serializer.data,
-        }
-    )
-
-    return JsonResponse(response_data[0], safe=False, status=200)
 
 
 class OrderViewSet(viewsets.ModelViewSet):
