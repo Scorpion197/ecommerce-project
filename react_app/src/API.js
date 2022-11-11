@@ -109,6 +109,7 @@ const API = {
     formData.append("sku", productData.sku);
     formData.append("images", productData.images);
     const response = await axios.post(endpoint, formData, requestConfig);
+    localStorage.setItem("productId", response?.data?.id);
     return response;
   },
 };

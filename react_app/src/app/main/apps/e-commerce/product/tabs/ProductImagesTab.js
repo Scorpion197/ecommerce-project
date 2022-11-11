@@ -54,13 +54,7 @@ function ProductImagesTab(props) {
   const dispatch = useDispatch();
   const [isUploading, setIsUploading] = useState(false);
 
-  const uploadImage = () => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve("Julian Wan.jpg");
-      }, 4000);
-    });
-  };
+  console.log("props: ", props);
   const handleImageSubmit = async (event) => {
     event.preventDefault();
     console.log("submitted");
@@ -76,6 +70,7 @@ function ProductImagesTab(props) {
     let formData = new FormData();
 
     formData.append("image", imageFile);
+    formData.append("productId", localStorage.getItem("productId"));
     setIsUploading(true);
     axios
       .post(endpoint, formData, requestConfig)
@@ -145,7 +140,7 @@ function ProductImagesTab(props) {
             </FuseSvgIcon>
             <img
               className="max-w-none w-auto h-full object-contain"
-              src={`http://localhost:8000${image}`}
+              src={`http://localhost:8000/media/${image}`}
               alt="product"
             />
           </div>
