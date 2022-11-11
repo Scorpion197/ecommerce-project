@@ -16,7 +16,7 @@ const API = {
   },
 
   fetchOneProduct: async (productId) => {
-    const endpoint = API_URL + `/product/${productId}/`;
+    const endpoint = API_URL + `/products/${productId}/`;
     const token = localStorage.getItem("token");
     const requestConfig = {
       headers: {
@@ -109,6 +109,7 @@ const API = {
     formData.append("sku", productData.sku);
     formData.append("images", productData.images);
     const response = await axios.post(endpoint, formData, requestConfig);
+    localStorage.setItem("productId", response?.data?.id);
     return response;
   },
 };

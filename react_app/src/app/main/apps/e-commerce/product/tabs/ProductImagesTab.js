@@ -54,18 +54,12 @@ function ProductImagesTab(props) {
   const dispatch = useDispatch();
   const [isUploading, setIsUploading] = useState(false);
 
-  const uploadImage = () => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve("Julian Wan.jpg");
-      }, 4000);
-    });
-  };
+  console.log("props: ", props);
   const handleImageSubmit = async (event) => {
     event.preventDefault();
     console.log("submitted");
     const token = localStorage.getItem("token");
-    const endpoint = "http://localhost:8000/products/";
+    const endpoint = "http://localhost:8000/upload-image/";
     const requestConfig = {
       headers: {
         Authorization: "Token " + token,
@@ -76,9 +70,10 @@ function ProductImagesTab(props) {
     let formData = new FormData();
 
     formData.append("image", imageFile);
+    formData.append("productId", localStorage.getItem("productId"));
     setIsUploading(true);
     axios
-      .put(endpoint, formData, requestConfig)
+      .post(endpoint, formData, requestConfig)
       .then((res) => {
         console.log("image uploaded successfully", res.data.image);
         setIsUploading(false);
@@ -145,7 +140,7 @@ function ProductImagesTab(props) {
             </FuseSvgIcon>
             <img
               className="max-w-none w-auto h-full object-contain"
-              src={`http://localhost:8000${image}`}
+              src={`http://localhost:8000/media/${image}`}
               alt="product"
             />
           </div>
