@@ -42,7 +42,6 @@ export const saveProduct = createAsyncThunk(
 export const addNewProduct = createAsyncThunk(
   "ecommerceApp/product/addNewProduct",
   async (productData) => {
-    alert(JSON.stringify(productData)+"")
     const response = await API.addNewProduct(productData);
     console.log("ecommerceApp/product/addNewProduct: ",productData, response);
     return response;
