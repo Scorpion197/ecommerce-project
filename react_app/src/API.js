@@ -73,6 +73,7 @@ const API = {
     formData.append("barcode", productData.barcode);
     formData.append("weight", productData.weight);
     formData.append("sku", productData.sku);
+    formData.append("images",productData.images)
     const response = await axios.put(endpoint, formData, requestConfig);
     return response;
   },
