@@ -59,7 +59,6 @@ export const newProduct = createAsyncThunk(
       return categories[Math.floor(Math.random()*(categories.length -1))]
     }
     return {
-        id: FuseUtils.generateGUID(),
         name: "AJFSJSAFKJ",
         category:getRandomCategory(),
         color:"ASAFJAFS",
@@ -78,10 +77,7 @@ const productSlice = createSlice({
   initialState: null,
   reducers: {
     resetProduct: () => null,
-    pushImageToProduct:(state,action)=>{
-      if(!state.images) return state;
-      state.images.push(action.payload)
-    }
+   
   },
   extraReducers: {
     [getProduct.fulfilled]: (state, action) =>{ 
@@ -95,7 +91,7 @@ const productSlice = createSlice({
   },
 });
 
-export const { resetProduct,pushImageToProduct } = productSlice.actions;
+export const { resetProduct } = productSlice.actions;
 
 export const selectProduct = ({ eCommerceApp }) => eCommerceApp.product;
 

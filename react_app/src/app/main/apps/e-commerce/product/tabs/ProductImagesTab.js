@@ -50,7 +50,8 @@ const Root = styled("div")(({ theme }) => ({
 
 function ProductImagesTab(props) {
   const methods = useFormContext();
-  const { control, watch } = methods;
+  const { control, watch ,setValue} = methods;
+ 
   const dispatch = useDispatch();
   const [isUploading, setIsUploading] = useState(false);
 
@@ -79,7 +80,7 @@ function ProductImagesTab(props) {
         console.log("image uploaded successfully", res.data.image);
         setIsUploading(false);
 
-        dispatch(pushImageToProduct(res.data.image));
+        setValue("images",[...images,res.data.image],{shouldValidate:true})
       })
       .catch((err) => {
         console.log("Error while uploading image");
