@@ -26,9 +26,13 @@ function ProductHeader(props) {
 
     const v = getValues()
     if(productId === "new"){
-      dispatch(addNewProduct({...v}));
+      dispatch(addNewProduct({...v})).then(()=>{
+        navigate("/apps/e-commerce/products");
+      })
     }else{
-      dispatch(updateProduct({...v}))
+      dispatch(updateProduct({...v})).then(()=>{
+        navigate("/apps/e-commerce/products");
+      })
     }
     console.log("t10",v)
   }
