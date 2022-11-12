@@ -4,12 +4,14 @@ import Typography from "@mui/material/Typography";
 import { motion } from "framer-motion";
 import { useFormContext } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import _ from "@lodash";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import { addNewProduct, removeProduct, saveProduct } from "../store/productSlice";
+import { addNewProduct, removeProduct, updateProduct } from "../store/productSlice";
 
 function ProductHeader(props) {
+  const routeParams = useParams();
+  const { productId } = routeParams;
   const dispatch = useDispatch();
   const methods = useFormContext();
   const { formState, watch, getValues } = methods;
@@ -23,7 +25,11 @@ function ProductHeader(props) {
   function handleSaveProduct() {
 
     const v = getValues()
-    dispatch(addNewProduct({...v}));
+    if(productId === "new"){
+      dispatch(addNewProduct({...v}));
+    }else{
+      dispatch(updateProduct({...v}))
+    }
     console.log("t10",v)
   }
 

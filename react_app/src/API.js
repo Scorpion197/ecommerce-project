@@ -56,7 +56,7 @@ const API = {
 
   updateProduct: async (productData) => {
     const token = localStorage.getItem("token");
-    const endpoint = API_URL + "/add-product/";
+    const endpoint = API_URL + "/products/";
     const requestConfig = {
       headers: {
         Authorization: "Token " + token,

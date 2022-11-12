@@ -23,17 +23,9 @@ export const removeProduct = createAsyncThunk(
   }
 );
 
-export const saveProduct = createAsyncThunk(
-  "eCommerceApp/product/saveProduct",
+export const updateProduct = createAsyncThunk(
+  "eCommerceApp/product/updateProduct",
   async (productData, { dispatch, getState }) => {
-    const { id } = getState().eCommerceApp;
-    delete productData.created_at;
-    //let formData = new FormData();
-    //formData.append("name", productData.name);
-    //formData.append("price", productData.price);
-    //formData.append("quantity", productData.quantity);
-    //formData.append("color", product.color);
-
     const response = await API.updateProduct(productData);
     return response;
   }
@@ -85,7 +77,7 @@ const productSlice = createSlice({
       return state;
     },
     [addNewProduct.fulfilled]: (state, action) =>state,
-    [saveProduct.fulfilled]: (state, action) => action.payload,
+    [updateProduct.fulfilled]: (state, action) => state,
     [removeProduct.fulfilled]: (state, action) => null,
     [newProduct.fulfilled]:(state,action)=>action.payload
   },
