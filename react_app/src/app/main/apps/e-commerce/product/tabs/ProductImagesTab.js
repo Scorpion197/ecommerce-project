@@ -50,8 +50,8 @@ const Root = styled("div")(({ theme }) => ({
 
 function ProductImagesTab(props) {
   const methods = useFormContext();
-  const { control, watch ,setValue} = methods;
- 
+  const { control, watch, setValue } = methods;
+
   const dispatch = useDispatch();
   const [isUploading, setIsUploading] = useState(false);
 
@@ -70,17 +70,19 @@ function ProductImagesTab(props) {
     };
     const imageFile = event.target.files[0];
     let formData = new FormData();
-    
+
     formData.append("image", imageFile);
     setIsUploading(true);
-    
+
     axios
       .post(endpoint, formData, requestConfig)
       .then((res) => {
         console.log("image uploaded successfully", res.data.image);
         setIsUploading(false);
 
-        setValue("images",[...images,res.data.image],{shouldValidate:true})
+        setValue("images", [...images, res.data.image], {
+          shouldValidate: true,
+        });
       })
       .catch((err) => {
         console.log("Error while uploading image");
@@ -95,7 +97,7 @@ function ProductImagesTab(props) {
         <Controller
           name="images"
           control={control}
-          render={({ field: { onChange,...others} }) => (
+          render={({ field: { onChange, ...others } }) => (
             <Box
               sx={{
                 backgroundColor: (theme) =>
@@ -114,7 +116,9 @@ function ProductImagesTab(props) {
                 className="hidden"
                 id="button-file"
                 type="file"
-                onChange={(e) => {handleImageSubmit(e)}}
+                onChange={(e) => {
+                  handleImageSubmit(e);
+                }}
               />
               {isUploading ? (
                 <CircularProgress size={32} />
@@ -126,20 +130,20 @@ function ProductImagesTab(props) {
             </Box>
           )}
         />
-        {images?.map((image,index) => (
+        {images?.map((image, index) => (
           <div
             role="button"
             className={clsx(
               "productImageItem flex items-center justify-center relative w-128 h-128 rounded-16 mx-12 mb-24 overflow-hidden cursor-pointer outline-none shadow hover:shadow-lg"
             )}
-            key={image+index}
+            key={image + index}
           >
             <FuseSvgIcon className="productImageFeaturedStar">
               heroicons-solid:star
             </FuseSvgIcon>
             <img
               className="max-w-none w-auto h-full object-contain"
-              src={`http://localhost:8000${image}`}
+              src={`http://localhost:8000/media/${image}`}
               alt="product"
             />
           </div>
