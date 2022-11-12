@@ -53,12 +53,6 @@ class ProductViewSet(APIView):
     def put(self, request, *args, **kwargs):
 
         print("PUT IS HERE")
-        product_image_serializer = ProductImageSerializer(data=request.data)
-        if product_image_serializer.is_valid():
-            product_image_serializer.save()
-            return Response(product_image_serializer.data)
-        else:
-            return Response(product_image_serializer.errors)
 
     def post(self, request, *args, **kwargs):
 
