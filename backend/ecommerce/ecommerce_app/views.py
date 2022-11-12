@@ -148,6 +148,11 @@ class ProductDetailView(APIView):
             status=200,
         )
 
+    def delete(self, request, pk):
+        product = self.get_object(pk)
+        product.delete()
+        return Response({"message": "Product deleted successfully"}, status=200)
+
 
 class UploadImageView(APIView):
     parser_classes = (MultiPartParser, FormParser)
