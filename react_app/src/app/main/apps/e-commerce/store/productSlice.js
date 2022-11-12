@@ -26,7 +26,9 @@ export const removeProduct = createAsyncThunk(
 export const updateProduct = createAsyncThunk(
   "eCommerceApp/product/updateProduct",
   async (productData, { dispatch, getState }) => {
-    const response = await API.updateProduct(productData);
+    const id = getState().eCommerceApp.product.id;
+    alert(""+id)
+    const response = await API.updateProduct(id,productData);
     return response;
   }
 );

@@ -54,7 +54,7 @@ const API = {
     return response;
   },
 
-  updateProduct: async (productData) => {
+  updateProduct: async (id,productData) => {
     const token = localStorage.getItem("token");
     const endpoint = API_URL + "/products/";
     const requestConfig = {
@@ -68,7 +68,7 @@ const API = {
     formData.append("price", productData.price);
     formData.append("category", productData.category);
     formData.append("color", productData.color);
-    formData.append("id", productData.id);
+    formData.append("id", id);
     formData.append("quantity", productData.quantity);
     formData.append("barcode", productData.barcode);
     formData.append("weight", productData.weight);
