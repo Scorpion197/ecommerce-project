@@ -52,7 +52,32 @@ class ProductViewSet(APIView):
 
     def put(self, request, *args, **kwargs):
 
-        print("PUT IS HERE")
+        product_object = Product.objects.get(id=int(request.data["id"]))
+        product_object.name = request.data["name"]
+        product_object.price = request.data["price"]
+        product_object.color = request.data["color"]
+        product_object.quantity = request.data["quantity"]
+        product_object.barcode = request.data["barcode"]
+        product_object.weight = request.data["weight"]
+        product_object.category = Category.objects.get(name=request.data["category"])
+        product_object.sku = request.data["sku"]
+        product_object.save()
+
+        product_images = request.data["images"].split(",")
+
+        for i in range(len(product_images)):
+            product_images[i] = product_images[i].replace("/media/", "")
+            try:
+                product_image_object = ProductImage.objects.get(
+                    product=product_object, image=product_images[i]
+                )
+            except ProductImage.DoesNotExist:
+                new_product_image = ProductImage.objects.create(
+                    product=product_object, image=product_images[i]
+                )
+
+        serializer = ProductSerializer(product_object)
+        return Response(serializer.data, status=200)
 
     def post(self, request, *args, **kwargs):
 
@@ -67,6 +92,7 @@ class ProductViewSet(APIView):
             barcode=request.data["barcode"],
             weight=request.data["weight"],
             sku=request.data["sku"],
+            color=request.data["color"],
             category=category,
         )
 
@@ -132,7 +158,10 @@ class UploadImageView(APIView):
         product_image_serializer = ProductImageSerializer(data=request.data)
         if product_image_serializer.is_valid():
             product_image_serializer.save()
-            return Response(product_image_serializer.data)
+
+            return Response(
+                {"image": product_image_serializer.data["image"].replace("/media/", "")}
+            )
         else:
             return Response(product_image_serializer.errors)
 
