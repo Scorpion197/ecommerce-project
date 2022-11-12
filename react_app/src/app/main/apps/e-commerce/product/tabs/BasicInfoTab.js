@@ -4,24 +4,24 @@ import { Controller, useFormContext } from "react-hook-form";
 import ReactHookFormSelect from "../../shared/ReactHookFormSelect";
 import { Alert, MenuItem } from "@mui/material";
 
-function BasicInfoTab({product}) {
+function BasicInfoTab({ product }) {
   const methods = useFormContext();
-  const { control, formState ,getValues} = methods;
+  const { control, formState, getValues } = methods;
   const { errors } = formState;
 
   const categories = product?.categories || [];
-  const getRandomCategory = ()=>{
-    if(categories.length  === 0 ) return "";
-    
-    return product.categories[Math.floor(Math.random()*(product.categories.length -1))]
-  }
+  const getRandomCategory = () => {
+    if (categories.length === 0) return "";
+
+    return product.categories[
+      Math.floor(Math.random() * (product.categories.length - 1))
+    ];
+  };
   return (
     <div>
-      {
-        errors?.images && (
-            <Alert severity="error">{errors?.images.message}</Alert>
-        )
-      }
+      {errors?.images && (
+        <Alert severity="error">{errors?.images.message}</Alert>
+      )}
       <Controller
         name="name"
         control={control}
@@ -48,18 +48,16 @@ function BasicInfoTab({product}) {
         label="Category"
         variant="outlined"
         margin="normal"
-
       >
-        {
-          categories.map((c,index)=>{
-            return (
-              <MenuItem key={index} value={c}>{c}</MenuItem>
-            )
-          })
-        }
-        
+        {categories.map((c, index) => {
+          return (
+            <MenuItem key={index} value={c}>
+              {c}
+            </MenuItem>
+          );
+        })}
       </ReactHookFormSelect>
-    
+
       <Controller
         name="color"
         control={control}
