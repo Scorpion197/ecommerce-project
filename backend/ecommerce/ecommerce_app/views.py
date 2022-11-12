@@ -76,12 +76,15 @@ class ProductViewSet(APIView):
             category=category,
         )
 
-        # for image in request.data["images"]:
-        #    print(image)
-        #    image_object = ProductImage.objects.get(image=image, product=new_product)
-        #    image_object.save()
+        images_name = request.data["images"].split(",")
+        for i in range(len(images_name)):
+            images_name[i] = images_name[i].replace("/media/", "")
 
-        print(request.data)
+        for image in images_name:
+            image_object = ProductImage.objects.get(image=image)
+            image_object.product = new_product
+            image_object.save()
+
         serializer = ProductSerializer(new_product)
         return Response(serializer.data)
 
