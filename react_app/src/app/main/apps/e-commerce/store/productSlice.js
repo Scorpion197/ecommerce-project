@@ -18,8 +18,8 @@ export const removeProduct = createAsyncThunk(
   "eCommerceApp/product/removeProduct",
   async (val, { dispatch, getState }) => {
     const { id } = getState().eCommerceApp.product;
-    await axios.delete(`/api/ecommerce/products/${id}`);
-    return id;
+    const response = await API.removeProduct(id);
+    return response;
   }
 );
 

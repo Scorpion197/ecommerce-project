@@ -113,6 +113,21 @@ const API = {
     localStorage.setItem("productId", response?.data?.id);
     return response;
   },
+
+
+  removeProduct:async (id)=>{
+    const token = localStorage.getItem("token");
+    const endpoint = API_URL + "/products/"+id;
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+ 
+    const response = await axios.delete(endpoint, formData, requestConfig);
+    return response;
+  }
 };
 
 export default API;
