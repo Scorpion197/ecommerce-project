@@ -1,0 +1,27 @@
+.container{
+    display: flex;
+    align-items: center;
+    column-gap: 6px;
+}
+.button{
+    border:1px solid var(--primary);
+    outline: none;
+    width: 30px;
+    height: 30px;
+    padding: 10px;
+    color: var(--primary);
+    font-size: 16px;
+    font-weight: 700;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.button:hover{
+    background-color: var(--primary);
+    color: white;
+}
+.container > span{
+    font-weight: 600;
+}

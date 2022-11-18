@@ -1,0 +1,26 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.title{
+    font-size: 25px;
+    font-weight: 700;
+    position: relative;
+    width: fit-content;
+}
+.title::after{
+    content: '';
+    display: block;
+    width: 100%;
+    height: 5px;
+    position: absolute;
+    background: rgba(7,102,224,0.25);
+    bottom: -2px;
+    z-index: -1;
+}
+
+.description{
+    color:var(--gray);
+    margin-top: 2px;
+}

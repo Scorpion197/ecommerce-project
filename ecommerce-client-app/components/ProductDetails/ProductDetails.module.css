@@ -1,0 +1,131 @@
+.container{
+    width: 100%;
+    display: flex;
+    height: calc(100vh - 80px - 30px); 
+    border: 1px solid var(--primary);
+    border-radius: 5px;
+   
+    
+}
+
+.left{
+    flex:1;
+    padding: 5px 15px;
+}
+.right{
+    flex:1;
+    border-left: 1px solid var(--primary);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+.carouselContainer{
+    width: 70%;
+    height: 70%;
+}
+.colorsContainer{
+    display: flex;
+    position: absolute;
+    left:30px;
+    top:50px;
+    flex-direction: column;
+    row-gap: 10px;
+}
+.color{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--primary);
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.stackedInputs{
+    margin-top: 10px;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr 1fr;
+}
+.actionButtons{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap:30px
+    
+}
+.buttonTalab{
+    width: 70%;
+}
+/****/
+.title{
+    font-weight: 600;
+    font-size: 25px;
+
+}
+.description{
+    color:var(--gray);
+}
+.price{
+    color:var(--primary);
+    font-weight: 600;
+    font-size: 24px;
+    
+}
+.note{
+    background-color: #0765e0be;
+    display: flex;
+    padding: 10px;
+    align-items: center;
+    column-gap: 10px;
+    margin: 20px 0;
+    border-radius: 5px;
+    justify-content: flex-end;
+}
+.note  svg {
+    color:white;
+    font-size: 25px;
+}
+.note >span{
+    color:white;
+    font-size: 14px;
+    font-weight: 400;
+}
+.requestRecap{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--gray);
+    margin-top: 20px;
+
+}
+.recapElement{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--gray);
+    padding: 20px;
+
+}
+.recapElement > span:nth-last-of-type(1){
+    font-weight: 600;
+}
+.recapElement > span:nth-last-of-type(2){
+    font-weight: 400;
+}
+.byAmountLabel{
+    background-color: var(--primary);
+    border-radius: 5px;
+    color:white;
+    font-size: 14px;
+    padding: 4px;
+    font-weight: 500;
+}
+
+
+@media screen and (max-width:900px) {
+    .container{
+
+    }
+}
