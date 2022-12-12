@@ -14,7 +14,7 @@ import DocumentationConfig from '../main/documentation/DocumentationConfig';
 
 const routeConfigs = [
   ...appsConfigs,
-  ...dashboardsConfigs,
+   ...dashboardsConfigs,
   ...pagesConfigs,
   ...authRoleExamplesConfigs,
   ...userInterfaceConfigs,

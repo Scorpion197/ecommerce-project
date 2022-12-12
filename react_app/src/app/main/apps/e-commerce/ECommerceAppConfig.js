@@ -5,6 +5,7 @@ const Product = lazy(() => import("./product/Product"));
 const Products = lazy(() => import("./products/Products"));
 const Order = lazy(() => import("./order/Order"));
 const Orders = lazy(() => import("./orders/Orders"));
+const Categories =  lazy(() => import("./categories/Categories"));
 
 const ECommerceAppConfig = {
   settings: {
@@ -28,9 +29,14 @@ const ECommerceAppConfig = {
       element: <Order />,
     },
     {
+      path:"apps/e-commerce/categories",
+      element:<Categories/>
+    },
+    {
       path: "apps/e-commerce",
       element: <Navigate to="products" />,
     },
+   
   ],
 };
 

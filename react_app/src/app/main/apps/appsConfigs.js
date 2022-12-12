@@ -11,18 +11,18 @@ import TasksAppConfig from "./tasks/TasksAppConfig";
 import HelpCenterAppConfig from "./help-center/HelpCenterAppConfig";
 import ProfileAppConfig from "./profile/profileAppConfig";
 const appsConfigs = [
-  MailboxAppConfig,
-  FileManagerAppConfig,
-  ContactsAppConfig,
-  CalendarAppConfig,
-  ChatAppConfig,
+  // MailboxAppConfig,
+  // FileManagerAppConfig,
+  // ContactsAppConfig,
+  // CalendarAppConfig,
+  // ChatAppConfig,
   ECommerceAppConfig,
-  ScrumboardAppConfig,
-  AcademyAppConfig,
-  NotesAppConfig,
-  TasksAppConfig,
-  HelpCenterAppConfig,
-  ProfileAppConfig,
+  // ScrumboardAppConfig,
+  // AcademyAppConfig,
+  // NotesAppConfig,
+  // TasksAppConfig,
+  // HelpCenterAppConfig,
+  // ProfileAppConfig,
 ];
 
 export default appsConfigs;
