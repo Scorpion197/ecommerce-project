@@ -78,7 +78,7 @@ const API = {
     return response;
   },
 
-  fetchProductCategories: async () => {
+  fetchProductCategories: async (flatArray = true) => {
     const token = localStorage.getItem("token");
     const endpoint = API_URL + `/categories/`;
     const requestConfig = {
@@ -88,7 +88,7 @@ const API = {
     };
 
     const response = await (await fetch(endpoint, requestConfig)).json();
-    return response.map((el) => el.name);
+    return flatArray ? response.map((el) => el.name) : response;
   },
   addNewProduct: async (productData) => {
     const token = localStorage.getItem("token");
@@ -113,20 +113,62 @@ const API = {
     localStorage.setItem("productId", response?.data?.id);
     return response;
   },
-
-
-  removeProduct:async (id)=>{
+  addNewCategorie: async (title) => {
     const token = localStorage.getItem("token");
-    const endpoint = API_URL + "/products/"+id;
+    const endpoint = API_URL + "/categories/";
     const requestConfig = {
       headers: {
         Authorization: "Token " + token,
         "Content-Type": "multipart/form-data",
       },
     };
- 
-    const response = await axios.delete(endpoint, formData, requestConfig);
-    return response;
+    let formData = new FormData();
+    formData.append("name", title);
+  
+    const response = await axios.post(endpoint, formData, requestConfig);
+    return response.data;
+  },
+  editCategory: async (title) => {
+    const token = localStorage.getItem("token");
+    const endpoint = API_URL + "/categories/";
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    let formData = new FormData();
+    formData.append("name", title);
+  
+    const response = await axios.patch(endpoint, formData, requestConfig);
+    return response.data;
+  },
+  removeCategory: async (id)=>{
+    const token = localStorage.getItem("token");
+    const endpoint = API_URL + "/categories/"+id+"/";
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+      },
+    };
+    
+    const response = await axios.delete(endpoint, requestConfig);
+    return response.data;
+  },
+
+
+  removeProduct:async (id)=>{
+    const token = localStorage.getItem("token");
+    const endpoint = API_URL + "/products/"+id+"/";
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    
+    const response = await axios.delete(endpoint, requestConfig);
+    return response.data;
   }
 };
 
