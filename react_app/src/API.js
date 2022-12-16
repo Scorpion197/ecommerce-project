@@ -54,7 +54,7 @@ const API = {
     return response;
   },
 
-  updateProduct: async (id,productData) => {
+  updateProduct: async (id, productData) => {
     const token = localStorage.getItem("token");
     const endpoint = API_URL + "/products/";
     const requestConfig = {
@@ -73,7 +73,7 @@ const API = {
     formData.append("barcode", productData.barcode);
     formData.append("weight", productData.weight);
     formData.append("sku", productData.sku);
-    formData.append("images",productData.images)
+    formData.append("images", productData.images);
     const response = await axios.put(endpoint, formData, requestConfig);
     return response;
   },
@@ -124,7 +124,7 @@ const API = {
     };
     let formData = new FormData();
     formData.append("name", title);
-  
+
     const response = await axios.post(endpoint, formData, requestConfig);
     return response.data;
   },
@@ -139,37 +139,36 @@ const API = {
     };
     let formData = new FormData();
     formData.append("name", title);
-  
-    const response = await axios.patch(endpoint, formData, requestConfig);
+    console.log("HHHHHHHHHHHHHHHHHHHHH");
+    const response = await axios.put(endpoint, formData, requestConfig);
     return response.data;
   },
-  removeCategory: async (id)=>{
+  removeCategory: async (id) => {
     const token = localStorage.getItem("token");
-    const endpoint = API_URL + "/categories/"+id+"/";
+    const endpoint = API_URL + "/categories/" + id + "/";
     const requestConfig = {
       headers: {
         Authorization: "Token " + token,
       },
     };
-    
+
     const response = await axios.delete(endpoint, requestConfig);
     return response.data;
   },
 
-
-  removeProduct:async (id)=>{
+  removeProduct: async (id) => {
     const token = localStorage.getItem("token");
-    const endpoint = API_URL + "/products/"+id+"/";
+    const endpoint = API_URL + "/products/" + id + "/";
     const requestConfig = {
       headers: {
         Authorization: "Token " + token,
         "Content-Type": "multipart/form-data",
       },
     };
-    
+
     const response = await axios.delete(endpoint, requestConfig);
     return response.data;
-  }
+  },
 };
 
 export default API;

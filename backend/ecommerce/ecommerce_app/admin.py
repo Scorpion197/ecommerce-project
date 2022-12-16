@@ -17,7 +17,7 @@ class AdminSubscription(admin.ModelAdmin):
 
 
 class AdminOrder(admin.ModelAdmin):
-    list_display = ("user_id",)
+    list_display = ("client_fullname", "client_phone")
 
 
 class ProductImageAdmin(admin.ModelAdmin):

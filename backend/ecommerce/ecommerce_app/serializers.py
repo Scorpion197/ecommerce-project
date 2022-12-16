@@ -185,14 +185,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = [
-            "id",
-            "created_at",
-            "status",
-            "payment_validated",
-            "user_id",
-            "product_id",
-        ]
+        fields = "__all__"
 
 
 class ProductImageSerializer(serializers.ModelSerializer):

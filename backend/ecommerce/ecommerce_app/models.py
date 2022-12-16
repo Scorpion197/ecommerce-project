@@ -195,7 +195,14 @@ class Order(models.Model):
         default=OrderStatus.PENDING.value,
     )
     payment_validated = models.BooleanField(default=False)
-    user_id = models.ForeignKey(UserAccount, to_field="id", on_delete=models.CASCADE)
     product_id = models.ForeignKey(
         Product, to_field="id", default="", on_delete=models.CASCADE
     )
+    client_fullname = models.CharField(max_length=50, null=True, blank=True, default="")
+    wilaya = models.CharField(max_length=30, default="", null=True, blank=True)
+    client_phone = models.CharField(
+        max_length=13, default="", null=True, blank=True, validators=[num_regex]
+    )
+
+    address = models.CharField(max_length=100, default="", null=True, blank=True)
+    payment_amount = models.PositiveIntegerField(default=0, null=True, blank=True)

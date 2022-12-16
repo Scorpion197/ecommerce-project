@@ -174,7 +174,7 @@ class UploadImageView(APIView):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -274,3 +274,59 @@ def get_subscriptions(request):
             continue
 
     return JsonResponse(data, safe=False, status=200)
+
+
+@permission_classes([AllowAny])
+@api_view(["GET"])
+def get_client_products(request):
+    products = Product.objects.all()
+    response_data = []
+    for product in products:
+        product_images = ProductImage.objects.filter(product=product)
+        images_array = []
+        for image in product_images:
+            images_array.append(str(image.image))
+        serializer = ProductSerializer(product)
+        response_data.append(
+            {
+                "id": serializer.data["id"],
+                "name": serializer.data["name"],
+                "price": serializer.data["price"],
+                "color": serializer.data["color"],
+                "quantity": serializer.data["quantity"],
+                "created_at": serializer.data["created_at"],
+                "category": Category.objects.get(id=product.category.id).name,
+                "images": images_array,
+            }
+        )
+    return JsonResponse(response_data, safe=False, status=200)
+
+
+@permission_classes([AllowAny])
+@api_view(["GET"])
+def get_one_client_product(request, pk):
+    product = Product.objects.get(pk=pk)
+    product_images = ProductImage.objects.filter(product=product)
+    images_array = []
+
+    for image in product_images:
+        images_array.append(str(image.image))
+
+    serializer = ProductSerializer(product)
+    return JsonResponse(
+        {
+            "id": serializer.data["id"],
+            "name": serializer.data["name"],
+            "price": serializer.data["price"],
+            "color": serializer.data["color"],
+            "quantity": serializer.data["quantity"],
+            "created_at": serializer.data["created_at"],
+            "weight": serializer.data["weight"],
+            "barcode": serializer.data["barcode"],
+            "sku": serializer.data["sku"],
+            "category": Category.objects.get(id=product.category.id).name,
+            "images": images_array,
+        },
+        safe=False,
+        status=200,
+    )

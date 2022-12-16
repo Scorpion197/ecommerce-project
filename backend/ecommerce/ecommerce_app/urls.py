@@ -69,6 +69,10 @@ urlpatterns = [
     path("products/", ProductViewSet.as_view(), name="manage_products"),
     path("products/<int:pk>/", ProductDetailView.as_view(), name="manage_product"),
     path("upload-image/", UploadImageView.as_view(), name="upload_image"),
+    path("client-products/", get_client_products, name="client_products"),
+    path(
+        "client-products/<int:pk>/", get_one_client_product, name="one_client_product"
+    ),
 ]
 
 urlpatterns += router.urls

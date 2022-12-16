@@ -7,7 +7,11 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import _ from "@lodash";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import { addNewProduct, removeProduct, updateProduct } from "../store/productSlice";
+import {
+  addNewProduct,
+  removeProduct,
+  updateProduct,
+} from "../store/productSlice";
 
 function ProductHeader(props) {
   const routeParams = useParams();
@@ -15,26 +19,26 @@ function ProductHeader(props) {
   const dispatch = useDispatch();
   const methods = useFormContext();
   const { formState, watch, getValues } = methods;
-  const { isValid, dirtyFields,errors } = formState;
+  const { isValid, dirtyFields, errors } = formState;
   const featuredImageId = watch("featuredImageId");
   const images = watch("images");
   const name = watch("name");
   const theme = useTheme();
   const navigate = useNavigate();
 
+  console.log("Product header props: ", props);
   function handleSaveProduct() {
-
-    const v = getValues()
-    if(productId === "new"){
-      dispatch(addNewProduct({...v})).then(()=>{
+    const v = getValues();
+    if (productId === "new") {
+      dispatch(addNewProduct({ ...v })).then(() => {
         navigate("/apps/e-commerce/products");
-      })
-    }else{
-      dispatch(updateProduct({...v})).then(()=>{
+      });
+    } else {
+      dispatch(updateProduct({ ...v })).then(() => {
         navigate("/apps/e-commerce/products");
-      })
+      });
     }
-    console.log("t10",v)
+    console.log("t10", v);
   }
 
   function handleRemoveProduct() {
@@ -74,7 +78,11 @@ function ProductHeader(props) {
           >
             <img
               className="w-32 sm:w-48 rounded"
-              src={props?.product?.image}
+              src={
+                props?.product?.images?.length > 0
+                  ? `http://localhost:8000/media/${props?.product?.images[0]}`
+                  : ""
+              }
               alt={name}
             />
           </motion.div>
@@ -111,7 +119,7 @@ function ProductHeader(props) {
           className="whitespace-nowrap mx-4"
           variant="contained"
           color="secondary"
-          disabled={!isValid }
+          disabled={!isValid}
           onClick={handleSaveProduct}
         >
           Save
