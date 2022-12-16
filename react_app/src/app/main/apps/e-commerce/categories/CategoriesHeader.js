@@ -4,8 +4,20 @@ import Typography from '@mui/material/Typography';
 import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
+import { useDebounce } from '@fuse/hooks';
+import { includesCategoryText } from '../store/categoriesSlice';
+import { useState } from 'react';
 
 function CategoriesHeader(props) {
+
+    const dispatch = useDispatch()
+    const [searchText,setSearchText] = useState("")
+
+
+    function handleTextSearch(ev){
+        setSearchText(searchText)
+        dispatch(includesCategoryText(ev.target.value))
+    }
 //   const dispatch = useDispatch();
 //   const searchText = useSelector(selectOrdersSearchText);
 
@@ -33,15 +45,12 @@ function CategoriesHeader(props) {
             placeholder="Search Category"
             className="flex flex-1"
             disableUnderline
+            value={searchText}
             fullWidth
-            value={""}
             inputProps={{
               'aria-label': 'Search Category',
             }}
-            // onChange={(ev) => 
-            //     // dispatch(setOrdersSearchText(ev))
-            //     0
-            // }
+            onChange={(ev) => handleTextSearch(ev)}
           />
         </Paper>
       </div>

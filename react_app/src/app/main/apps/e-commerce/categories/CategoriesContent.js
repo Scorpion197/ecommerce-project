@@ -38,10 +38,10 @@ function CategoriesContent(props) {
   });
   const categories = useSelector(selectCategories);
   const [open, setOpen] = useState(false);
-  const editRef = useRef(false);
+  const editIdRef = useRef(null);
   const handleClose = () => {
     setOpen(false);
-    editRef.current = false;
+    editIdRef.current = null;
   };
   const handleOpen = () => setOpen(true);
   const routeParams = useParams();
@@ -63,10 +63,9 @@ function CategoriesContent(props) {
 
   const handleAddCategorie = () => {
     const { title } = getValues();
-    const testValues = getValues();
-    console.log("TEST VALUES: ", testValues);
-    if (editRef.current) {
-      dispatch(editCategorie(title))
+    if (editIdRef.current) {
+      const id = editIdRef.current;
+      dispatch(editCategorie({ id, title }))
         .then(() => {
           handleClose();
           reset();
@@ -89,7 +88,7 @@ function CategoriesContent(props) {
   };
   const handleEditCategory = (id, name) => {
     setValue("title", name);
-    editRef.current = true;
+    editIdRef.current = id;
     handleOpen();
   };
 
@@ -143,7 +142,7 @@ function CategoriesContent(props) {
                 className="justify-center w-fit gap-14 mt-14"
               >
                 <Button variant="contained" type="submit">
-                  {editRef.current ? "Edit" : "Add"}
+                  {editIdRef.current !== null ? "Edit" : "Add"}
                 </Button>
                 <Button variant="contained" onClick={() => handleClose()}>
                   Annuler
