@@ -18,8 +18,8 @@ export const addNewCategorie = createAsyncThunk(
 )
 export const editCategorie = createAsyncThunk(
     "categories/edit-category",
-    async (title)=>{
-         return await API.editCategory(title);
+    async ({id,title})=>{
+         return await API.editCategory(id,title);
     }
 )
 
@@ -34,7 +34,11 @@ const categoriesSlice = createSlice({
     name:'categories',
     initialState:[],
     reducers:{
-
+        includesCategoryText:(state,action)=>{
+            console.log(action.payload)
+            state  = state.filter(el=> el.name.includes(action.payload))
+            return state
+        }
     },
     extraReducers:(builder=>{
         builder
@@ -63,4 +67,5 @@ const categoriesSlice = createSlice({
 
 export const selectCategories = ({ eCommerceApp }) => eCommerceApp.categories;
 
+export const {includesCategoryText} = categoriesSlice.actions
 export default categoriesSlice.reducer;

@@ -25,10 +25,10 @@ function CategoriesContent(props) {
   })
   const  categories= useSelector(selectCategories)
   const [open,setOpen] = useState(false)
-  const editRef = useRef(false)
+  const editIdRef = useRef(null)
   const handleClose = ()=>{
     setOpen(false)
-    editRef.current = false
+    editIdRef.current = null
 }
   const handleOpen = ()=>setOpen(true)
   const routeParams = useParams();
@@ -51,8 +51,9 @@ function CategoriesContent(props) {
 
  const handleAddCategorie = ()=>{
     const {title} = getValues()
-    if(editRef.current){
-        dispatch(editCategorie(title)).then(()=>{
+    if(editIdRef.current){
+        const id = editIdRef.current
+        dispatch(editCategorie({id,title})).then(()=>{
             handleClose()
             reset()
         })
@@ -75,7 +76,7 @@ function CategoriesContent(props) {
  }
     const handleEditCategory = (id,name)=>{
         setValue("title",name)
-        editRef.current = true
+        editIdRef.current = id
         handleOpen()
     }
 
@@ -122,7 +123,7 @@ function CategoriesContent(props) {
             )}
         />
                 <Stack direction="row" className="justify-center w-fit gap-14 mt-14">
-                    <Button variant="contained" type='submit'>{editRef.current?"Edit":"Add"}</Button>
+                    <Button variant="contained" type='submit'>{editIdRef.current !== null?"Edit":"Add"}</Button>
                     <Button variant="contained" onClick={()=>handleClose()}>Annuler</Button>
                 </Stack>
             </form>

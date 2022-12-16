@@ -128,9 +128,10 @@ const API = {
     const response = await axios.post(endpoint, formData, requestConfig);
     return response.data;
   },
-  editCategory: async (title) => {
+  editCategory: async (id,title) => {
+  
     const token = localStorage.getItem("token");
-    const endpoint = API_URL + "/categories/";
+    const endpoint = API_URL + "/categories/"+id+"/";
     const requestConfig = {
       headers: {
         Authorization: "Token " + token,
