@@ -7,8 +7,11 @@ from django.core.validators import RegexValidator
 from enum import Enum
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from safedelete.models import SafeDeleteModel
+from safedelete.models import HARD_DELETE_NOCASCADE
 
 num_regex = RegexValidator(r"^[0-9]*$", "only numbers are allowed")
+
 
 # Create your models here.
 class UserTypes(Enum):
@@ -95,7 +98,8 @@ class SizeChoices(Enum):
     EXTRA_EXTRA_LARGE = "XXL"
 
 
-class Shop(models.Model):
+class Shop(SafeDeleteModel):
+    _safedelete_policy = HARD_DELETE_NOCASCADE
     shop_name = models.CharField(max_length=20, default="", null=True, blank=True)
     owner = models.OneToOneField(
         UserAccount,
@@ -110,14 +114,16 @@ class Shop(models.Model):
         return self.shop_name
 
 
-class Category(models.Model):
+class Category(SafeDeleteModel):
+    _safedelete_policy = HARD_DELETE_NOCASCADE
     name = models.CharField(max_length=200, blank=True, default="", null=True)
 
     def __str__(self) -> str:
         return self.name
 
 
-class Product(models.Model):
+class Product(SafeDeleteModel):
+    _safedelete_policy = HARD_DELETE_NOCASCADE
     name = models.CharField(max_length=200, blank=True, null=True, default="")
     price = models.IntegerField(default=0)
     size = models.CharField(
@@ -135,7 +141,8 @@ class Product(models.Model):
     barcode = models.CharField(max_length=50, default="", null=True, blank=True)
 
 
-class ProductImage(models.Model):
+class ProductImage(SafeDeleteModel):
+    _safedelete_policy = HARD_DELETE_NOCASCADE
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, null=True, default=None, to_field="id"
     )
@@ -157,7 +164,8 @@ class SubscriptionStatus(Enum):
     expired = "expired"
 
 
-class Subscription(models.Model):
+class Subscription(SafeDeleteModel):
+    _safedelete_policy = HARD_DELETE_NOCASCADE
     created_at = models.DateTimeField(default=datetime.now(), null=True, blank=True)
     duration = models.CharField(
         max_length=15,
@@ -185,7 +193,8 @@ class OrderStatus(Enum):
     PENDING = "PENDING"
 
 
-class Order(models.Model):
+class Order(SafeDeleteModel):
+    _safedelete_policy = HARD_DELETE_NOCASCADE
     created_at = models.DateTimeField(default=timezone.now(), null=True, blank=True)
     status = models.CharField(
         max_length=10,
