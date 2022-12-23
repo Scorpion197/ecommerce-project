@@ -1,70 +1,78 @@
-import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import MenuList from '@mui/material/MenuList';
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Tooltip from '@mui/material/Tooltip';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { Box } from '@mui/system';
-import TableHead from '@mui/material/TableHead';
-import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
-import { darken, lighten } from '@mui/material/styles';
-import { removeOrders } from '../store/ordersSlice';
+import Checkbox from "@mui/material/Checkbox";
+import IconButton from "@mui/material/IconButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import MenuList from "@mui/material/MenuList";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import TableSortLabel from "@mui/material/TableSortLabel";
+import Tooltip from "@mui/material/Tooltip";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Box } from "@mui/system";
+import TableHead from "@mui/material/TableHead";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import { darken, lighten } from "@mui/material/styles";
+import { removeOrders } from "../store/ordersSlice";
 
 const rows = [
   {
-    id: 'id',
-    align: 'left',
+    id: "client_fullname",
+    align: "left",
     disablePadding: false,
-    label: 'ID',
+    label: "Client Name",
     sort: true,
   },
   {
-    id: 'reference',
-    align: 'left',
+    id: "client_phone",
+    align: "left",
     disablePadding: false,
-    label: 'Reference',
+    label: "Client Phone",
     sort: true,
   },
   {
-    id: 'customer',
-    align: 'left',
+    id: "product_id",
+    align: "left",
     disablePadding: false,
-    label: 'Customer',
+    label: "Product",
+    sort: true,
+  },
+
+  {
+    id: "payment_amount",
+    align: "left",
+    disablePadding: false,
+    label: "Payment",
     sort: true,
   },
   {
-    id: 'total',
-    align: 'right',
+    id: "payment_validated",
+    align: "right",
     disablePadding: false,
-    label: 'Total',
+    label: "Payment Validated",
     sort: true,
   },
   {
-    id: 'payment',
-    align: 'left',
+    id: "status",
+    align: "left",
     disablePadding: false,
-    label: 'Payment',
+    label: "Status",
     sort: true,
   },
   {
-    id: 'status',
-    align: 'left',
+    id: "created_at",
+    align: "left",
     disablePadding: false,
-    label: 'Status',
+    label: "Created At",
     sort: true,
   },
   {
-    id: 'date',
-    align: 'left',
+    id: "action",
+    align: "left",
     disablePadding: false,
-    label: 'Date',
+    label: "Action",
     sort: true,
   },
 ];
@@ -99,7 +107,10 @@ function OrdersTableHead(props) {
           className="w-40 md:w-64 text-center z-99"
           sx={{
             backgroundColor: (theme) =>
-              darken(theme.palette.background.paper, theme.palette.mode === 'light' ? 0.02 : 0.2),
+              darken(
+                theme.palette.background.paper,
+                theme.palette.mode === "light" ? 0.02 : 0.2
+              ),
           }}
         >
           <Checkbox
@@ -112,13 +123,13 @@ function OrdersTableHead(props) {
               className="flex items-center justify-center absolute w-64 top-0 ltr:left-0 rtl:right-0 mx-56 h-64 z-10 border-b-1"
               sx={{
                 backgroundColor: (theme) =>
-                  theme.palette.mode === 'light'
+                  theme.palette.mode === "light"
                     ? lighten(theme.palette.background.default, 0.4)
                     : lighten(theme.palette.background.default, 0.02),
               }}
             >
               <IconButton
-                aria-owns={selectedOrdersMenu ? 'selectedOrdersMenu' : null}
+                aria-owns={selectedOrdersMenu ? "selectedOrdersMenu" : null}
                 aria-haspopup="true"
                 onClick={openSelectedOrdersMenu}
                 size="large"
@@ -154,20 +165,24 @@ function OrdersTableHead(props) {
             <TableCell
               sx={{
                 backgroundColor: (theme) =>
-                  theme.palette.mode === 'light'
+                  theme.palette.mode === "light"
                     ? lighten(theme.palette.background.default, 0.4)
                     : lighten(theme.palette.background.default, 0.02),
               }}
               className="p-4 md:p-16"
               key={row.id}
               align={row.align}
-              padding={row.disablePadding ? 'none' : 'normal'}
-              sortDirection={props.order.id === row.id ? props.order.direction : false}
+              padding={row.disablePadding ? "none" : "normal"}
+              sortDirection={
+                props.order.id === row.id ? props.order.direction : false
+              }
             >
               {row.sort && (
                 <Tooltip
                   title="Sort"
-                  placement={row.align === 'right' ? 'bottom-end' : 'bottom-start'}
+                  placement={
+                    row.align === "right" ? "bottom-end" : "bottom-start"
+                  }
                   enterDelay={300}
                 >
                   <TableSortLabel

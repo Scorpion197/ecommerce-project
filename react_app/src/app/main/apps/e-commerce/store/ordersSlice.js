@@ -4,14 +4,13 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import axios from "axios";
-
+import API from "../../../../../API";
 export const getOrders = createAsyncThunk(
   "eCommerceApp/orders/getOrders",
   async () => {
-    const response = await axios.get("/api/ecommerce/orders");
-    const data = await response.data;
-
-    return data;
+    const response = await API.fetchOrders();
+    console.log("FETCHED ORDERS: ", response);
+    return response;
   }
 );
 

@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import withRouter from "@fuse/core/withRouter";
 import FuseLoading from "@fuse/core/FuseLoading";
 import OrdersStatus from "../order/OrdersStatus";
+import Button from "@mui/material/Button";
 import {
   getOrders,
   selectOrders,
@@ -194,27 +195,34 @@ function OrdersTable(props) {
                     </TableCell>
 
                     <TableCell
-                      className="p-4 md:p-16"
+                      className="p-4 md:p-16 truncate"
                       component="th"
                       scope="row"
                     >
-                      {n.id}
+                      {`${n.client_fullname}`}
                     </TableCell>
-
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                    >
-                      {n.reference}
-                    </TableCell>
-
                     <TableCell
                       className="p-4 md:p-16 truncate"
                       component="th"
                       scope="row"
                     >
-                      {`${n.customer.firstName} ${n.customer.lastName}`}
+                      {`${n.client_phone}`}
+                    </TableCell>
+                    <TableCell
+                      className="p-4 md:p-16 truncate"
+                      component="th"
+                      scope="row"
+                    >
+                      {`${n.product_id}`}
+                    </TableCell>
+
+                    <TableCell
+                      className="p-4 md:p-16"
+                      component="th"
+                      scope="row"
+                    >
+                      <span>$</span>
+                      {n.payment_amount}
                     </TableCell>
 
                     <TableCell
@@ -223,8 +231,7 @@ function OrdersTable(props) {
                       scope="row"
                       align="right"
                     >
-                      <span>$</span>
-                      {n.total}
+                      {JSON.stringify(n.payment_validated)}
                     </TableCell>
 
                     <TableCell
@@ -232,7 +239,7 @@ function OrdersTable(props) {
                       component="th"
                       scope="row"
                     >
-                      {n.payment.method}
+                      <OrdersStatus name={n.status} />
                     </TableCell>
 
                     <TableCell
@@ -240,15 +247,22 @@ function OrdersTable(props) {
                       component="th"
                       scope="row"
                     >
-                      <OrdersStatus name={n.status[0].name} />
+                      {n.created_at}
                     </TableCell>
-
-                    <TableCell
-                      className="p-4 md:p-16"
-                      component="th"
-                      scope="row"
-                    >
-                      {n.date}
+                    <TableCell className="p-4 md:p-16">
+                      <Button
+                        variant="contained"
+                        sx={{
+                          borderRadius: "10px",
+                          color: "#fff",
+                          backgroundColor: "#3498db",
+                          "&:hover": {
+                            backgroundColor: "#27ae60",
+                          },
+                        }}
+                      >
+                        Validate
+                      </Button>
                     </TableCell>
                   </TableRow>
                 );

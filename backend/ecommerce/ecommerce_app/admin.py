@@ -1,5 +1,13 @@
 from django.contrib import admin
-from .models import UserAccount, Product, Subscription, Order, ProductImage, Category
+from .models import (
+    UserAccount,
+    Product,
+    Subscription,
+    Order,
+    ProductImage,
+    Category,
+    Shop,
+)
 
 
 class AdminUserAccount(admin.ModelAdmin):
@@ -28,6 +36,10 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ("name",)
 
 
+class ShopAdmin(admin.ModelAdmin):
+    list_display = ("shop_name",)
+
+
 # Register your models here.
 admin.site.register(UserAccount, AdminUserAccount)
 admin.site.register(Product, AdminProduct)
@@ -35,3 +47,4 @@ admin.site.register(Subscription, AdminSubscription)
 admin.site.register(Order, AdminOrder)
 admin.site.register(ProductImage, ProductImageAdmin)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(Shop, ShopAdmin)

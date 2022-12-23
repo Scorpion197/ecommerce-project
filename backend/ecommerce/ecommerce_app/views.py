@@ -26,7 +26,9 @@ class ProductViewSet(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        products = Product.objects.all()
+        token = request.headers["Authorization"].replace("Token", "").replace(" ", "")
+        shop = Shop.objects.get(owner__auth_token__key=token)
+        products = Product.objects.filter(shop=shop)
         response_data = []
         for product in products:
             product_images = ProductImage.objects.filter(product=product)
@@ -105,6 +107,10 @@ class ProductViewSet(APIView):
             image_object.product = new_product
             image_object.save()
 
+        shop = Shop.objects.get(owner__auth_token__key=request.data["token"])
+        new_product.shop = shop
+        new_product.link = f"{shop.shop_name}/{new_product.id}"
+        new_product.save()
         serializer = ProductSerializer(new_product)
         return Response(serializer.data)
 
@@ -176,10 +182,29 @@ class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     permission_classes = [AllowAny]
 
+    def create(self, request, *args, **kwargs):
+        new_order = Order.objects.create(
+            client_fullname=request.data["client_fullname"],
+            wilaya=request.data["wilaya"],
+            client_phone=request.data["client_phone"],
+            address=request.data["address"],
+            product_id=Product.objects.get(id=request.data["product_id"]),
+            payment_amount=request.data["payment_amount"],
+        )
+
+        serializer = OrderSerializer(new_order, many=False)
+        return Response(serializer.data)
+
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [IsAuthenticated]
+
+
+class VendorsViewSet(viewsets.ModelViewSet):
+    queryset = UserAccount.objects.filter(user_type="VENDOR")
+    serializer_class = CustomUserDetailSerializer
     permission_classes = [IsAuthenticated]
 
 

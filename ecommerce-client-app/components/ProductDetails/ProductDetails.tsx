@@ -10,8 +10,7 @@ import { BsCheck } from "react-icons/bs";
 import { useState } from "react";
 import Select from "react-select";
 import axios from "axios";
-
-const wilayas = ["بجاية 06", "شلف 02", "ادرار 01", "بليدة 09"];
+import wilayas from "../../public/wilayas.json";
 interface PropType {
   title: string;
   description: string;
@@ -37,6 +36,7 @@ const ProductDetails = ({
       originalHeight: "100%",
     };
   });
+  const wilayasName = wilayas.map((item: any) => item?.name);
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
   const [wilaya, setWilaya] = useState("");
@@ -44,16 +44,21 @@ const ProductDetails = ({
   const [address, setAddress] = useState("");
   const router = useRouter();
 
+  const handleWilayaChange = (newValue: any) => {
+    setWilaya(newValue?.label);
+  };
+
   const handleSubmitOrder = async () => {
     const endpoint = "http://localhost:8000/orders/";
     const data = {
       client_fullname: name,
       status: "PENDING",
-      wilaya: "tlemcen",
+      wilaya: wilaya,
       client_phone: phone,
       address: address,
       product_id: router?.query?.productId,
       payment_amount: price * quantity,
+      payment_validated: false,
     };
 
     console.log("Data to submit: ", data);
@@ -107,14 +112,18 @@ const ProductDetails = ({
           <Select
             className="basic-single"
             classNamePrefix="select"
-            defaultValue={{ label: wilayas[0], value: wilayas[0] }}
+            defaultValue={{ id: 0, label: "Adrar" }}
             isDisabled={false}
             isLoading={false}
             isClearable={true}
-            isRtl={true}
             isSearchable={false}
+            isRtl={true}
             name="color"
-            options={wilayas.map((el) => ({ label: el, value: el }))}
+            options={wilayas.map((item) => ({
+              label: item.name,
+              id: Number(item.id),
+            }))}
+            onChange={handleWilayaChange}
           />
         </div>
 

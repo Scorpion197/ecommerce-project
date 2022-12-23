@@ -109,6 +109,7 @@ const API = {
     formData.append("weight", productData.weight);
     formData.append("sku", productData.sku);
     formData.append("images", productData.images);
+    formData.append("token", token);
     const response = await axios.post(endpoint, formData, requestConfig);
     localStorage.setItem("productId", response?.data?.id);
     return response;
@@ -128,10 +129,9 @@ const API = {
     const response = await axios.post(endpoint, formData, requestConfig);
     return response.data;
   },
-  editCategory: async (id,title) => {
-  
+  editCategory: async (id, title) => {
     const token = localStorage.getItem("token");
-    const endpoint = API_URL + "/categories/"+id+"/";
+    const endpoint = API_URL + "/categories/" + id + "/";
     const requestConfig = {
       headers: {
         Authorization: "Token " + token,
@@ -140,7 +140,6 @@ const API = {
     };
     let formData = new FormData();
     formData.append("name", title);
-    console.log("HHHHHHHHHHHHHHHHHHHHH");
     const response = await axios.put(endpoint, formData, requestConfig);
     return response.data;
   },
@@ -169,6 +168,31 @@ const API = {
 
     const response = await axios.delete(endpoint, requestConfig);
     return response.data;
+  },
+
+  fetchOrders: async () => {
+    const token = localStorage.getItem("token");
+    const endpoint = API_URL + "/orders/";
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+      },
+    };
+
+    const response = await (await fetch(endpoint, requestConfig)).json();
+    return response;
+  },
+  fetchOneOrder: async (orderId) => {
+    const token = localStorage.getItem("token");
+    const endpoint = API_URL + `/orders/${orderId}/`;
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+      },
+    };
+
+    const response = await (await fetch(endpoint, requestConfig)).json();
+    return response;
   },
 };
 

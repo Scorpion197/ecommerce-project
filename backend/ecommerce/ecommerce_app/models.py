@@ -9,6 +9,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from safedelete.models import SafeDeleteModel
 from safedelete.models import HARD_DELETE_NOCASCADE
+import uuid
 
 num_regex = RegexValidator(r"^[0-9]*$", "only numbers are allowed")
 
@@ -123,6 +124,7 @@ class Category(SafeDeleteModel):
 
 
 class Product(SafeDeleteModel):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     _safedelete_policy = HARD_DELETE_NOCASCADE
     name = models.CharField(max_length=200, blank=True, null=True, default="")
     price = models.IntegerField(default=0)
@@ -139,6 +141,11 @@ class Product(SafeDeleteModel):
     weight = models.IntegerField(default=0, null=True, blank=True)
     sku = models.CharField(max_length=20, default="", null=True, blank=True)
     barcode = models.CharField(max_length=50, default="", null=True, blank=True)
+    link = models.CharField(max_length=300, blank=True, null=True, default="")
+    shop = models.ForeignKey(Shop, null=True, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class ProductImage(SafeDeleteModel):
@@ -205,7 +212,12 @@ class Order(SafeDeleteModel):
     )
     payment_validated = models.BooleanField(default=False)
     product_id = models.ForeignKey(
-        Product, to_field="id", default="", on_delete=models.CASCADE
+        Product,
+        to_field="id",
+        default=None,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     client_fullname = models.CharField(max_length=50, null=True, blank=True, default="")
     wilaya = models.CharField(max_length=30, default="", null=True, blank=True)

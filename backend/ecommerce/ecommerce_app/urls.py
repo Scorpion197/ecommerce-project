@@ -28,6 +28,7 @@ router = routers.DefaultRouter()
 router.register("orders", OrderViewSet, basename="manage_orders")
 router.register("subscriptions", SubscriptionViewSet, basename="manage_subscriptions")
 router.register("categories", CategoryViewSet, basename="manage_categories")
+router.register("vendors", VendorsViewSet, basename="manage_vendors")
 # Auth routes
 urlpatterns = [
     path("register/", RegisterView.as_view()),
@@ -71,7 +72,7 @@ urlpatterns = [
     path("upload-image/", UploadImageView.as_view(), name="upload_image"),
     path("client-products/", get_client_products, name="client_products"),
     path(
-        "client-products/<int:pk>/", get_one_client_product, name="one_client_product"
+        "client-products/<uuid:pk>/", get_one_client_product, name="one_client_product"
     ),
 ]
 

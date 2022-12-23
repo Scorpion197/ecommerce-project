@@ -183,6 +183,8 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    product_id = serializers.StringRelatedField(many=False)
+
     class Meta:
         model = Order
         fields = "__all__"

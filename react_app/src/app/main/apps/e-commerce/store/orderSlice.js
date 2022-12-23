@@ -1,22 +1,29 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import API from "../../../../../API";
+import axios from "axios";
 
-export const getOrder = createAsyncThunk('eCommerceApp/order/getOrder', async (orderId) => {
-  const response = await axios.get(`/api/ecommerce/orders/${orderId}`);
-  const data = await response.data;
+export const getOrder = createAsyncThunk(
+  "eCommerceApp/order/getOrder",
+  async (orderId) => {
+    const response = await axios.get(`/api/ecommerce/orders/${orderId}`);
+    const data = await response.data;
 
-  return data === undefined ? null : data;
-});
+    return data === undefined ? null : data;
+  }
+);
 
-export const saveOrder = createAsyncThunk('eCommerceApp/order/saveOrder', async (order) => {
-  const response = await axios.put('/api/ecommerce/orders', order);
-  const data = await response.data;
+export const saveOrder = createAsyncThunk(
+  "eCommerceApp/order/saveOrder",
+  async (order) => {
+    const response = await axios.put("/api/ecommerce/orders", order);
+    const data = await response.data;
 
-  return data;
-});
+    return data;
+  }
+);
 
 const orderSlice = createSlice({
-  name: 'eCommerceApp/order',
+  name: "eCommerceApp/order",
   initialState: null,
   reducers: {
     resetOrder: () => null,
