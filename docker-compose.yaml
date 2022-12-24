@@ -1,0 +1,53 @@
+version: "3"
+
+services:
+  vendorapp:
+    container_name: vendor_app
+    build:
+      context: ./react_app/
+
+    ports:
+      - "3000:3000"
+
+  adminapp:
+    container_name: admin_app
+    build:
+      context: ./react-admin-app/
+
+    ports:
+      - "3003:3000"
+
+  clientapp:
+    container_name: client_app
+    build:
+      context: ./ecommerce-client-app/
+
+    ports:
+      - "3002:3002"
+
+  backend:
+    build: ./backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./app/:/usr/src/app/
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13.0-alpine
+    ports:
+      - "6000:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - NAME=${NAME}
+      - USER=${USER}
+      - PASSWORD=${PASSWORD}
+    env_file:
+      - ./.env.dev
+volumes:
+  postgres_data:

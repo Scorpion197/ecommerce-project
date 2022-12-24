@@ -176,6 +176,7 @@ const ProductDetails = ({
                 onClick={() => setSelectedColor(index)}
                 style={{ backgroundColor: color.code }}
                 className={styles.color}
+                key={index}
               >
                 {selectedColor === index && (
                   <BsCheck

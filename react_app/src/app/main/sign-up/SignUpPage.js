@@ -22,7 +22,6 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import { useState, useEffect } from "react";
 import axios from "axios";
