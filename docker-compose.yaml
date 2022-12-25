@@ -27,13 +27,17 @@ services:
 
   backend:
     build: ./backend
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python3 /usr/src/app/ecommerce/manage.py runserver 0.0.0.0:8000
     volumes:
       - ./app/:/usr/src/app/
     ports:
       - "8000:8000"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     env_file:
-      - ./.env.dev
+      - ./.env
     depends_on:
       - db
 
@@ -44,10 +48,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - NAME=${NAME}
-      - USER=${USER}
-      - PASSWORD=${PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     env_file:
-      - ./.env.dev
+      - ./.env
+    networks:
+      - dbnetwork
+networks:
+  dbnetwork:
+
 volumes:
   postgres_data:
