@@ -26,7 +26,7 @@ services:
       - "3002:3002"
 
   backend:
-    build: ./backend
+    build: ./backend/ecommerce/
     command: python3 /usr/src/app/ecommerce/manage.py runserver 0.0.0.0:8000
     volumes:
       - ./app/:/usr/src/app/
