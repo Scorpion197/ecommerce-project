@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from allauth.account.views import ConfirmEmailView
@@ -401,8 +402,8 @@ def admin_login(request):
     user = authenticate(email=request.data["email"], password=request.data["password"])
     if user:
         if user.user_type == "admin":
-            serializer = CustomUserDetailSerializer(user)
-            return Response(serializer.data, status=200)
+            token = Token.objects.get_or_create(user_id=user.id)[0].key
+            return Response({"token": token}, status=200)
         else:
             return Response({"message": "not allowed"}, status=401)
     return Response({"message": "not allowed"}, status=401)
