@@ -227,3 +227,11 @@ class Order(SafeDeleteModel):
 
     address = models.CharField(max_length=100, default="", null=True, blank=True)
     payment_amount = models.PositiveIntegerField(default=0, null=True, blank=True)
+    shop = models.ForeignKey(
+        Shop,
+        to_field="id",
+        default=None,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )

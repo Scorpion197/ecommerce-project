@@ -6,12 +6,16 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from allauth.account.views import ConfirmEmailView
 from allauth.account.models import EmailAddress
+from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 from django.http import JsonResponse
 from .models import *
 from .serializers import *
+from .permissions import AdminPermission
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import pytz
@@ -178,9 +182,12 @@ class UploadImageView(APIView):
 
 
 class OrderViewSet(viewsets.ModelViewSet):
-    queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        owner = UserAccount.objects.get(email=self.request.user)
+        return Order.objects.filter(shop__owner=owner)
 
     def create(self, request, *args, **kwargs):
         new_order = Order.objects.create(
@@ -232,6 +239,38 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
     serializer_class = SubscriptionSerializer
     permission_classes = [IsAuthenticated]
     filter_fields = ["is_valid", "duration", "created_at"]
+
+    def get(self, request, *args, **kwargs):
+        queryset = Subscription.objects.all()
+        data = []
+
+        for subscription in queryset:
+            subscription_owner_email = subscription.owner.email
+            serializer = SubscriptionSerializer(subscription)
+            try:
+
+                email_account = EmailAddress.objects.get(email=subscription_owner_email)
+                data.append(
+                    {
+                        "id": subscription.id,
+                        "owner_first_name": subscription.owner.first_name,
+                        "owner_family_name": subscription.owner.family_name,
+                        "owner_email": subscription.owner.email,
+                        "owner_phone": subscription.owner.phone,
+                        "created_at": serializer.data["created_at"],
+                        "duration": subscription.duration,
+                        "started_at": serializer.data["started_at"],
+                        "status": subscription.status,
+                        "expires_at": serializer.data["expires_at"],
+                        "email_verified": str(email_account.verified),
+                    }
+                )
+
+            except EmailAddress.DoesNotExist:
+                print("Error occured while trying to get owner email")
+                continue
+
+        return JsonResponse(data, safe=False, status=200)
 
     def update(self, request, *args, **kwargs):
         request_data = request.data
@@ -355,3 +394,15 @@ def get_one_client_product(request, pk):
         safe=False,
         status=200,
     )
+
+
+@api_view(["POST"])
+def admin_login(request):
+    user = authenticate(email=request.data["email"], password=request.data["password"])
+    if user:
+        if user.user_type == "admin":
+            serializer = CustomUserDetailSerializer(user)
+            return Response(serializer.data, status=200)
+        else:
+            return Response({"message": "not allowed"}, status=401)
+    return Response({"message": "not allowed"}, status=401)

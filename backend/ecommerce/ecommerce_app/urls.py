@@ -66,7 +66,6 @@ urlpatterns = [
     re_path(
         r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
     ),
-    path("get-subscriptions/", get_subscriptions, name="test_subscriptions_function"),
     path("products/", ProductViewSet.as_view(), name="manage_products"),
     path("products/<int:pk>/", ProductDetailView.as_view(), name="manage_product"),
     path("upload-image/", UploadImageView.as_view(), name="upload_image"),
@@ -74,6 +73,7 @@ urlpatterns = [
     path(
         "client-products/<uuid:pk>/", get_one_client_product, name="one_client_product"
     ),
+    path("auth/admin/login/", admin_login, name="admin_login"),
 ]
 
 urlpatterns += router.urls
