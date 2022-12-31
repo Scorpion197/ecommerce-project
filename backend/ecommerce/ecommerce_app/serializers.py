@@ -35,7 +35,7 @@ class EmailAddressSerializer(serializers.ModelSerializer):
 class CustomUserDetailSerializer(UserDetailsSerializer):
     first_name = serializers.CharField(required=True)
     family_name = serializers.CharField(required=True)
-    user_type = serializers.CharField(required=True)
+    user_type = serializers.CharField(required=False)
     is_active = serializers.BooleanField(default=False)
 
     class Meta:

@@ -88,7 +88,7 @@ const Subscriptions = () => {
   const [loading, setLoading] = useState(true);
   const [subscriptions, setSubscriptions] = useState([]);
   const loadData = async () => {
-    const endpoint = "http://localhost:8000/get-subscriptions/";
+    const endpoint = "http://localhost:8000/subscriptions/";
     const token = localStorage.getItem("token");
     console.log("token: ", token);
     const requestConfig = {

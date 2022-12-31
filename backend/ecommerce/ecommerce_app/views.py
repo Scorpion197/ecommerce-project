@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.authtoken.models import Token
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
@@ -16,7 +16,7 @@ from django.utils.translation import gettext_lazy as _
 from django.http import JsonResponse
 from .models import *
 from .serializers import *
-from .permissions import AdminPermission
+from .permissions import *
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import pytz
@@ -238,7 +238,7 @@ class CustomVerifyEmailView(APIView, ConfirmEmailView):
 class SubscriptionViewSet(viewsets.ModelViewSet):
     queryset = Subscription.objects.all()
     serializer_class = SubscriptionSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AdminPermission]
     filter_fields = ["is_valid", "duration", "created_at"]
 
     def get(self, request, *args, **kwargs):
@@ -304,6 +304,54 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
             subscription_object.save()
             serializer = SubscriptionSerializer(subscription_object)
             return Response(serializer.data, status=200)
+
+
+class UpdateVendorView(generics.UpdateAPIView):
+    serializer_class = UserDetailsSerializer
+    permission_classes = [VendorAuthPermission]
+    queryset = UserAccount.objects.filter(user_type="VENDOR")
+
+    def update(self, request, *args, **kwargs):
+        token = request.headers["Authorization"].replace("Token", "").replace(" ", "")
+        user = UserAccount.objects.get(auth_token=token)
+        user.first_name = request.data["first_name"]
+        user.family_name = request.data["family_name"]
+        user.phone = request.data["phone"]
+        user.email = request.data["email"]
+        shop = Shop.objects.get(owner=user)
+        shop.shop_name = request.data["shop_name"]
+        shop.save()
+        user.save()
+        serializer = CustomUserDetailSerializer(user)
+        return Response(serializer.data)
+
+
+class UpdateEmailVendorView(generics.UpdateAPIView):
+    serializer_class = CustomUserDetailSerializer
+    permission_classes = [VendorAuthPermission]
+    queryset = UserAccount.objects.filter(user_type="VENDOR")
+
+    def update(self, request, *args, **kwargs):
+        token = request.headers["Authorization"].replace("Token", "").replace(" ", "")
+        user = UserAccount.objects.get(auth_token=token)
+        user.email = request.data["newEmail"]
+        user.is_active = False
+        user.save()
+        serializer = CustomUserDetailSerializer(user)
+        return Response(serializer.data)
+
+
+class VendorDetailView(APIView):
+    permission_classes = [VendorAuthPermission]
+
+    def get(self, request, *args, **kwargs):
+        token = request.headers["Authorization"].replace("Token", "").replace(" ", "")
+        vendor = UserAccount.objects.get(auth_token=token)
+        serializer = CustomUserDetailSerializer(vendor)
+        shop = Shop.objects.get(owner=vendor)
+        data = serializer.data
+        data["shop_name"] = shop.shop_name
+        return JsonResponse(data, safe=False, status=200)
 
 
 @permission_classes([IsAuthenticated])

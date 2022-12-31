@@ -41,7 +41,7 @@ export default function SignIn() {
   console.log("Sign in component");
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const endpoint = "http://localhost:8000/login/";
+    const endpoint = "http://localhost:8000/auth/admin/login/";
     const data = new FormData(event.currentTarget);
     const requestData = {
       email: data.get("email"),
@@ -52,8 +52,8 @@ export default function SignIn() {
       .post(endpoint, requestData)
       .then((res) => {
         console.log("Admin signed in successfully");
-        console.log("token: ", res?.data?.key);
-        localStorage.setItem("token", res?.data?.key);
+        console.log("token: ", res?.data?.token);
+        localStorage.setItem("token", res?.data?.token);
         setRedirect(true);
       })
       .catch((err) => {

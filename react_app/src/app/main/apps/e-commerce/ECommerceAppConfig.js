@@ -5,7 +5,9 @@ const Product = lazy(() => import("./product/Product"));
 const Products = lazy(() => import("./products/Products"));
 const Order = lazy(() => import("./order/Order"));
 const Orders = lazy(() => import("./orders/Orders"));
-const Categories =  lazy(() => import("./categories/Categories"));
+const Categories = lazy(() => import("./categories/Categories"));
+const ProfileApp = lazy(() => import("../profile/ProfileApp"));
+const SecuredRoute = lazy(() => import("../../../SecuredRoute/SecuredRoute"));
 
 const ECommerceAppConfig = {
   settings: {
@@ -14,29 +16,60 @@ const ECommerceAppConfig = {
   routes: [
     {
       path: "apps/e-commerce/products",
-      element: <Products />,
+      element: (
+        <SecuredRoute>
+          <Products />
+        </SecuredRoute>
+      ),
     },
     {
       path: "apps/e-commerce/products/:productId/*",
-      element: <Product />,
+      element: (
+        <SecuredRoute>
+          <Product />
+        </SecuredRoute>
+      ),
     },
     {
       path: "apps/e-commerce/orders",
-      element: <Orders />,
+      element: (
+        <SecuredRoute>
+          <Orders />
+        </SecuredRoute>
+      ),
     },
     {
       path: "apps/e-commerce/orders/:orderId",
-      element: <Order />,
+      element: (
+        <SecuredRoute>
+          <Order />
+        </SecuredRoute>
+      ),
     },
     {
-      path:"apps/e-commerce/categories",
-      element:<Categories/>
+      path: "apps/e-commerce/categories",
+      element: (
+        <SecuredRoute>
+          <Categories />
+        </SecuredRoute>
+      ),
+    },
+    {
+      path: "apps/e-commerce/profile",
+      element: (
+        <SecuredRoute>
+          <ProfileApp />
+        </SecuredRoute>
+      ),
     },
     {
       path: "apps/e-commerce",
-      element: <Navigate to="products" />,
+      element: (
+        <SecuredRoute>
+          <Products />
+        </SecuredRoute>
+      ),
     },
-   
   ],
 };
 

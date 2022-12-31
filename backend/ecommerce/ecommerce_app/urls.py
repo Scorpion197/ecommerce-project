@@ -74,6 +74,13 @@ urlpatterns = [
         "client-products/<uuid:pk>/", get_one_client_product, name="one_client_product"
     ),
     path("auth/admin/login/", admin_login, name="admin_login"),
+    path("update-vendor/", UpdateVendorView.as_view(), name="update_vendor"),
+    path("vendor-detail/", VendorDetailView.as_view(), name="vendor_detail"),
+    path(
+        "update-vendor-email/",
+        UpdateEmailVendorView.as_view(),
+        name="update_vendor_email",
+    ),
 ]
 
 urlpatterns += router.urls
