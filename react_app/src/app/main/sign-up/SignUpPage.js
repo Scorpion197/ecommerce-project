@@ -25,11 +25,13 @@ import DialogTitle from "@mui/material/DialogTitle";
 import PhoneInput from "react-phone-number-input";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { yupToFormErrors } from "formik";
 /**
  * Form Validation Schema
  */
 
 const API_URL = process.env.REACT_APP_BACKEND_API_URL;
+const phoneRegex = "^0[0-9]*";
 
 const schema = yup.object().shape({
   email: yup
@@ -49,6 +51,11 @@ const schema = yup.object().shape({
   firstName: yup.string().required("You must give your first name"),
   familyName: yup.string().required("You must give your family name"),
   shopName: yup.string().required("You must enter your shop name"),
+  phone: yup
+    .string()
+    .matches(phoneRegex, "Invalid phone number")
+    .max(10)
+    .min(10),
 });
 
 const defaultValues = {
@@ -232,23 +239,24 @@ function SignUpPage() {
                 />
               )}
             />
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                paddingLeft: "10px",
-                height: "52px",
-                border: "1px solid #C4C0C0",
-                borderRadius: "5px",
-                marginBottom: "20px",
-              }}
-            >
-              <PhoneInput
-                placeholder="Enter phone number"
-                value={phone}
-                onChange={setPhone}
-              />
-            </Box>
+            <Controller
+              name="phone"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  className="mb-24"
+                  label="Phone number"
+                  type="name"
+                  error={!!errors.phone}
+                  helperText={errors?.phone?.message}
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              )}
+            />
+
             <Controller
               name="shopName"
               control={control}
