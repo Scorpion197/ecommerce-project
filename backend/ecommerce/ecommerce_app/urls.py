@@ -67,7 +67,7 @@ urlpatterns = [
         r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
     ),
     path("products/", ProductViewSet.as_view(), name="manage_products"),
-    path("products/<int:pk>/", ProductDetailView.as_view(), name="manage_product"),
+    path("products/<uuid:pk>/", ProductDetailView.as_view(), name="manage_product"),
     path("upload-image/", UploadImageView.as_view(), name="upload_image"),
     path("client-products/", get_client_products, name="client_products"),
     path(
