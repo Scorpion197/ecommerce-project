@@ -81,6 +81,9 @@ urlpatterns = [
         UpdateEmailVendorView.as_view(),
         name="update_vendor_email",
     ),
+    path(
+        "confirm-reset-code/", ConfirmResetCodeView.as_view(), name="confirm_reset_code"
+    ),
 ]
 
 urlpatterns += router.urls

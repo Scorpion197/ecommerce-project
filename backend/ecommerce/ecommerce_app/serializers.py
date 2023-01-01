@@ -148,7 +148,8 @@ class CustomLoginSerializer(LoginSerializer):
     #! change later
     def authenticate(self, **kwargs):
         user = authenticate(self.context["request"], **kwargs)
-        if user:
+        if user and user.set_active:
+
             if user.user_type == "ADMIN":
                 return user
             elif user.user_type == "VENDOR":

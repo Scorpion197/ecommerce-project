@@ -72,6 +72,10 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         choices=[(type.name, type.value) for type in UserTypes],
         default=UserTypes.VENDOR.value,
     )
+
+    # code to use when a user requests to change his email
+    reset_code = models.PositiveIntegerField(default=0, null=True, blank=True)
+    set_active = models.BooleanField(default=True, blank=True, null=True)
     objects = UserAccountManager()
 
     USERNAME_FIELD = "email"

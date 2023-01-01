@@ -33,6 +33,7 @@ const ChangeEmail = () => {
   const [emailField, setEmailField] = useState("");
   const [open, setOpen] = useState(false);
   const [redirect, setRedirect] = useState(false);
+  const [confirmationCode, setConfirmationCode] = useState(0);
   const navigate = useNavigate();
 
   const handleClose = () => {
@@ -41,6 +42,10 @@ const ChangeEmail = () => {
 
   const handleChange = (event) => {
     setEmailField(event.target.value);
+  };
+
+  const handleConfirmationCodeChange = (event) => {
+    setConfirmationCode(event.target.value);
   };
 
   const handleEmailChange = async () => {
@@ -69,16 +74,23 @@ const ChangeEmail = () => {
       });
   };
 
-  const handleSendLink = async () => {
+  const handleConfirmCode = async () => {
+    const endpoint = "http://localhost:8000/confirm-reset-code/";
     const token = localStorage.getItem("token");
-    const endpoint =
-      "http://localhost:8000/dj-rest-auth/registration/resend-email/";
-
     const data = {
+      reset_code: confirmationCode,
       email: emailField,
+      oldEmail: localStorage.getItem("email"),
     };
+
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+      },
+    };
+
     axios
-      .post(endpoint, data)
+      .post(endpoint, data, requestConfig)
       .then((res) => {
         console.log("Email sent successfully");
         localStorage.clear();
@@ -136,16 +148,30 @@ const ChangeEmail = () => {
           keepMounted
           onClose={handleClose}
           aria-describedby="alert-dialog-slide-description"
+          sx={{
+            width: "60%",
+          }}
         >
           <DialogTitle>{"Get Confirmation Link"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">
-              Please verify your email in order to confirm your email and
-              continue using the plateforme
+              Please enter the code you received on your email:
             </DialogContentText>
+            <TextField
+              id="outlined-basic"
+              label="Confirmation Code"
+              name="ConfirmationCode"
+              type="number"
+              variant="outlined"
+              value={confirmationCode}
+              onChange={handleConfirmationCodeChange}
+              sx={{
+                width: "40%",
+              }}
+            />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleSendLink}>Send link</Button>
+            <Button onClick={handleConfirmCode}>Confirm</Button>
           </DialogActions>
         </Dialog>
       </Stack>

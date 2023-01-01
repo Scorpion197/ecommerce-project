@@ -13,6 +13,7 @@ from allauth.account.views import ConfirmEmailView
 from allauth.account.models import EmailAddress
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 from django.http import JsonResponse
 from .models import *
 from .serializers import *
@@ -20,6 +21,7 @@ from .permissions import *
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import pytz
+import random
 
 utc = pytz.UTC
 
@@ -335,10 +337,49 @@ class UpdateEmailVendorView(generics.UpdateAPIView):
         token = request.headers["Authorization"].replace("Token", "").replace(" ", "")
         user = UserAccount.objects.get(auth_token=token)
         user.email = request.data["newEmail"]
-        user.is_active = False
+        user.set_active = False
+        user.reset_code = random.randint(10000, 100000)
         user.save()
+
+        # send email to user
+        mail_subject = "Email confirmation"
+        mail_content = f"Your confirmation code is: {user.reset_code}"
+
+        send_mail(
+            mail_subject,
+            mail_content,
+            settings.EMAIL_HOST_USER,
+            [user.email],
+            fail_silently=False,
+        )
+
         serializer = CustomUserDetailSerializer(user)
         return Response(serializer.data)
+
+
+class ConfirmResetCodeView(APIView):
+    permission_classes = [VendorAuthPermission]
+
+    def post(self, request, *args, **kwargs):
+
+        token = request.headers["Authorization"].replace("Token ", "").replace(" ", "")
+        token_object = Token.objects.get(key=token)
+        token_object.delete()
+        user = UserAccount.objects.get(email=request.data["email"])
+        reset_code = request.data["reset_code"]
+        if user.reset_code == int(reset_code):
+            user.reset_code = random.randint(10000, 100000)
+            user.set_active = True
+
+            user.save()
+            EmailAddress.objects.create(email=user.email, user=user, verified=True)
+            old_email_object = EmailAddress.objects.get(email=request.data["oldEmail"])
+            old_email_object.delete()
+            message = {"verified": True}
+            return Response(message, status=200)
+
+        message = {"verified": False}
+        return Response(message, status=400)
 
 
 class VendorDetailView(APIView):
