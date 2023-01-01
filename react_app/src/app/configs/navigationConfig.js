@@ -1,14 +1,14 @@
-import i18next from 'i18next';
-import DocumentationNavigation from '../main/documentation/DocumentationNavigation';
+import i18next from "i18next";
+import DocumentationNavigation from "../main/documentation/DocumentationNavigation";
 
-import ar from './navigation-i18n/ar';
-import en from './navigation-i18n/en';
-import tr from './navigation-i18n/tr';
-import authRoles from '../auth/authRoles';
+import ar from "./navigation-i18n/ar";
+import en from "./navigation-i18n/en";
+import tr from "./navigation-i18n/tr";
+import authRoles from "../auth/authRoles";
 
-i18next.addResourceBundle('en', 'navigation', en);
-i18next.addResourceBundle('tr', 'navigation', tr);
-i18next.addResourceBundle('ar', 'navigation', ar);
+i18next.addResourceBundle("en", "navigation", en);
+i18next.addResourceBundle("tr", "navigation", tr);
+i18next.addResourceBundle("ar", "navigation", ar);
 
 const navigationConfig = [
   // {
@@ -43,12 +43,12 @@ const navigationConfig = [
   //   ],
   // },
   {
-    id: 'apps',
-    title: 'Applications',
-    subtitle: 'Custom made application designs',
-    type: 'group',
-    icon: 'heroicons-outline:home',
-    translate: 'APPLICATIONS',
+    id: "apps",
+    title: "Applications",
+    subtitle: "Custom made application designs",
+    type: "group",
+    icon: "heroicons-outline:home",
+    translate: "APPLICATIONS",
     children: [
       // {
       //   id: 'apps.academy',
@@ -84,49 +84,55 @@ const navigationConfig = [
       //   translate: 'CONTACTS',
       // },
       {
-        id: 'apps.ecommerce',
-        title: 'ECommerce',
-        type: 'collapse',
-        icon: 'heroicons-outline:shopping-cart',
-        translate: 'ECOMMERCE',
+        id: "apps.ecommerce",
+        title: "ECommerce",
+        type: "collapse",
+        icon: "heroicons-outline:shopping-cart",
+        translate: "ECOMMERCE",
         children: [
           {
-            id: 'e-commerce-products',
-            title: 'Products',
-            type: 'item',
-            url: 'apps/e-commerce/products',
+            id: "e-commerce-products",
+            title: "Products",
+            type: "item",
+            url: "apps/e-commerce/products",
             end: true,
           },
           {
-            id: 'e-commerce-product-detail',
-            title: 'Product Detail',
-            type: 'item',
-            url: 'apps/e-commerce/products/1/a-walk-amongst-friends-canvas-print',
+            id: "e-commerce-product-detail",
+            title: "Product Detail",
+            type: "item",
+            url: "apps/e-commerce/products/1/a-walk-amongst-friends-canvas-print",
           },
           {
-            id: 'e-commerce-new-product',
-            title: 'New Product',
-            type: 'item',
-            url: 'apps/e-commerce/products/new',
+            id: "e-commerce-new-product",
+            title: "New Product",
+            type: "item",
+            url: "apps/e-commerce/products/new",
           },
           {
-            id: 'e-commerce-orders',
-            title: 'Orders',
-            type: 'item',
-            url: 'apps/e-commerce/orders',
+            id: "e-commerce-orders",
+            title: "Orders",
+            type: "item",
+            url: "apps/e-commerce/orders",
             end: true,
           },
           {
-            id: 'e-commerce-order-detail',
-            title: 'Order Detail',
-            type: 'item',
-            url: 'apps/e-commerce/orders/1',
+            id: "e-commerce-order-detail",
+            title: "Order Detail",
+            type: "item",
+            url: "apps/e-commerce/orders/1",
           },
           {
-            id: 'e-commerce-categories',
-            title: 'Product Categories',
-            type: 'item',
-            url: 'apps/e-commerce/categories',
+            id: "e-commerce-categories",
+            title: "Product Categories",
+            type: "item",
+            url: "apps/e-commerce/categories",
+          },
+          {
+            id: "ecommerce-profile",
+            title: "Profile",
+            type: "item",
+            url: "apps/e-commerce/profile",
           },
         ],
       },
@@ -747,7 +753,7 @@ const navigationConfig = [
   //   ],
   // },
 
-//******************************************************User interface*************************************************** */
+  //******************************************************User interface*************************************************** */
 
   // {
   //   id: 'user-interface',
@@ -981,41 +987,41 @@ const navigationConfig = [
 
   //*********************************************************************************************************** */
   {
-    id: 'divider-1',
-    type: 'divider',
+    id: "divider-1",
+    type: "divider",
   },
 
   //*************************************************DocumentationNavigation******************************************************* */
   // DocumentationNavigation,
   {
-    id: 'auth',
-    title: 'Auth',
-    type: 'group',
-    icon: 'verified_user',
+    id: "auth",
+    title: "Auth",
+    type: "group",
+    icon: "verified_user",
     children: [
       {
-        id: 'sign-in',
-        title: 'Sign in',
-        type: 'item',
-        url: 'sign-in',
+        id: "sign-in",
+        title: "Sign in",
+        type: "item",
+        url: "sign-in",
         auth: authRoles.onlyGuest,
-        icon: 'lock',
+        icon: "lock",
       },
       {
-        id: 'register',
-        title: 'Register',
-        type: 'item',
-        url: 'sign-up',
+        id: "register",
+        title: "Register",
+        type: "item",
+        url: "sign-up",
         auth: authRoles.onlyGuest,
-        icon: 'person_add',
+        icon: "person_add",
       },
       {
-        id: 'sign-out',
-        title: 'Sign out',
-        type: 'item',
-        auth: authRoles.user,
-        url: 'sign-out',
-        icon: 'exit_to_app',
+        id: "sign-out",
+        title: "Sign out",
+        type: "item",
+        auth: authRoles.onlyGuest,
+        url: "sign-out",
+        icon: "exit_to_app",
       },
       // {
       //   id: 'auth-admin-example',
@@ -1065,14 +1071,11 @@ const navigationConfig = [
     ],
   },
   {
-    type: 'divider',
-    id: 'divider-2',
+    type: "divider",
+    id: "divider-2",
   },
 
-
-    /****navigation features ******************************************/
-
-
+  /****navigation features ******************************************/
 
   // {
   //   id: 'navigation-features',
