@@ -1008,6 +1008,13 @@ const navigationConfig = [
         icon: "lock",
       },
       {
+        id: "confirm-email",
+        title: "Confirm Email",
+        type: "item",
+        url: "confirm-email",
+        auth: authRoles.onlyGuest,
+      },
+      {
         id: "register",
         title: "Register",
         type: "item",

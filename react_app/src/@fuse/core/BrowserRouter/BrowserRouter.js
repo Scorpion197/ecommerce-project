@@ -1,7 +1,7 @@
-import { useLayoutEffect, useState } from 'react';
-import history from '@history';
-import { Router } from 'react-router-dom';
-
+import { useLayoutEffect, useState } from "react";
+import history from "@history";
+import { Router, Route, Routes } from "react-router-dom";
+import ConfirmEmail from "src/app/main/confirm-email/ConfirmEmail";
 function BrowserRouter({ basename, children, window }) {
   const [state, setState] = useState({
     action: history.action,

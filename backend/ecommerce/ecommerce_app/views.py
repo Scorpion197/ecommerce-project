@@ -130,7 +130,6 @@ class ProductViewSet(APIView):
 class CustomRegistrationView(RegisterView):
     serializer_class = CustomRegisterSerializer
     token_model = TokenModel
-    template_name = "email_confirmation/confirm.html"
 
     def get_response_data(self, user):
         return super().get_response_data(user)
@@ -159,6 +158,7 @@ class CustomRegistrationView(RegisterView):
             data["token"] = token.key
             return Response(data, status=201)
         else:
+            print("Error occured: ", serializer.errors)
             return Response(serializer.errors, status=204)
 
 

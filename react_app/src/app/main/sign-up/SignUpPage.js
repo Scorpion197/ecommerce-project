@@ -79,7 +79,7 @@ function SignUpPage() {
   const [SubscriptionType, setSubscriptionType] = useState("");
   const [open, setOpen] = useState(false);
   const [redirectToLogin, setRedirectToLogin] = useState(false);
-  const [phone, setPhone] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -87,13 +87,6 @@ function SignUpPage() {
 
   const handleClose = () => {
     setOpen(false);
-    setRedirectToLogin(true);
-  };
-
-  const handleRedirectToLogin = (event) => {
-    event.preventDefault();
-    setOpen(false);
-    setRedirectToLogin(true);
   };
 
   const handleChange = (event) => {
@@ -108,6 +101,7 @@ function SignUpPage() {
     firstName,
     familyName,
     shopName,
+    phone,
   }) => {
     const endpoint = API_URL + "/register/";
     const data = {
@@ -129,15 +123,18 @@ function SignUpPage() {
       .post(endpoint, data)
       .then((res) => {
         console.log("Signed up successfully");
-        setOpen(true);
+        localStorage.setItem("email", res?.data?.email);
+        setRedirectToLogin(true);
       })
       .catch((err) => {
-        console.log("Error while doing signup : ", err);
+        console.log("Error while doing signup : ", err?.response?.data?.Error);
+        setErrorMessage(err?.response?.data?.Error);
+        setOpen(true);
       });
   };
 
   useEffect(() => {
-    if (redirectToLogin) return navigate("/sign-in");
+    if (redirectToLogin) return navigate("/confirm-email");
   }, [redirectToLogin]);
 
   return (
@@ -186,21 +183,14 @@ function SignUpPage() {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
-              <DialogTitle id="alert-dialog-title">
-                {"Activation email"}
-              </DialogTitle>
+              <DialogTitle id="alert-dialog-title">{"Error"}</DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                  Please check your email and confirm your account in order to
-                  complete registration process. If you didn't receive any email
-                  please click on Resend email.
+                  {errorMessage + ". Please provide valid information"}
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose}>Close</Button>
-                <Button onClick={handleRedirectToLogin} autoFocus>
-                  Login
-                </Button>
               </DialogActions>
             </Dialog>
             <Controller

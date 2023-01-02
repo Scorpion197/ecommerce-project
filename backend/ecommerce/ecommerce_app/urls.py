@@ -1,8 +1,8 @@
 from ast import ListComp
 from django.urls import path, re_path, include
 from dj_rest_auth.registration.views import (
-    RegisterView,
     ConfirmEmailView,
+    ResendEmailVerificationView,
 )  # ! overwrite this one later
 from dj_rest_auth.views import LogoutView, LoginView
 from rest_framework import routers
@@ -43,6 +43,7 @@ urlpatterns = [
     # path("accounts/", include("allauth.urls"), name="socialaccount_signup"),
     path("login/", LoginView.as_view()),
     path("logout/", LogoutView.as_view()),
+    path("resend-email/", ResendEmailVerificationView.as_view()),
     re_path(
         r"^account-confirm-email/",
         ConfirmEmailView.as_view(),

@@ -8,6 +8,7 @@ const Orders = lazy(() => import("./orders/Orders"));
 const Categories = lazy(() => import("./categories/Categories"));
 const ProfileApp = lazy(() => import("../profile/ProfileApp"));
 const SecuredRoute = lazy(() => import("../../../SecuredRoute/SecuredRoute"));
+const ConfirmEmail = lazy(() => import("../../confirm-email/ConfirmEmail"));
 
 const ECommerceAppConfig = {
   settings: {

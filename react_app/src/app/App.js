@@ -15,7 +15,8 @@ import FuseAuthorization from "@fuse/core/FuseAuthorization";
 import settingsConfig from "app/configs/settingsConfig";
 import withAppProviders from "./withAppProviders";
 import { AuthProvider } from "./auth/AuthContext";
-
+import { createBrowserRouter, RouterProvider, Router } from "react-router-dom";
+import ConfirmEmail from "./main/confirm-email/ConfirmEmail";
 // import axios from 'axios';
 /**
  * Axios HTTP Request defaults
