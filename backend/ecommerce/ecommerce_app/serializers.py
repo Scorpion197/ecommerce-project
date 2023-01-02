@@ -98,6 +98,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         return data_dict
 
     def save(self, request):
+
         user = super().save(request)
         try:
             shop = self._validated_data["shop"] or None

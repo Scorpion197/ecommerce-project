@@ -116,7 +116,7 @@ function SignUpPage() {
       password2: passwordConfirm,
       first_name: firstName,
       family_name: familyName,
-      phone: phone.replace("+213", "0"),
+      phone: phone,
       subscription: {
         duration: SubscriptionType,
       },

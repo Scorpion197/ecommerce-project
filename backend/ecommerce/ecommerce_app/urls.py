@@ -31,13 +31,13 @@ router.register("categories", CategoryViewSet, basename="manage_categories")
 router.register("vendors", VendorsViewSet, basename="manage_vendors")
 # Auth routes
 urlpatterns = [
-    path("register/", RegisterView.as_view()),
+    path("register/", CustomRegistrationView.as_view()),
     path(
         "account-confirm-email/<str:key>/", ConfirmEmailView.as_view()
     ),  # ! later try to customize this
     path(
         "account-confirm-email/",
-        CustomVerifyEmailView.as_view(),
+        ConfirmEmailView.as_view(),
         name="account_email_verification_sent",
     ),
     # path("accounts/", include("allauth.urls"), name="socialaccount_signup"),
@@ -45,12 +45,12 @@ urlpatterns = [
     path("logout/", LogoutView.as_view()),
     re_path(
         r"^account-confirm-email/",
-        CustomVerifyEmailView.as_view(),
+        ConfirmEmailView.as_view(),
         name="account_email_verification_sent",
     ),
     re_path(
         r"^account-confirm-email/(?P<key>[-:\w]+)/$",
-        CustomVerifyEmailView.as_view(),
+        ConfirmEmailView.as_view(),
         name="account_confirm_email",
     ),
     re_path(

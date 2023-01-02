@@ -64,7 +64,6 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 REST_AUTH_SERIALIZERS = {
     "LOGIN_SERIALIZER": "ecommerce_app.serializers.CustomLoginSerializer",
     "USER_DETAILS_SERIALIZER": "ecommerce_app.serializers.CustomUserDetailSerializer",
-    "VERIFY_EMAIL_SERIALIZER": "ecommerce_app.serializers.CustomVerifyEmailSerializer",
 }
 
 AUTHENTICATION_BACKENDS = [

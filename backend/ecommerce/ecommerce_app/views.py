@@ -9,8 +9,13 @@ from rest_framework import status, generics
 from rest_framework.authtoken.models import Token
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from dj_rest_auth.models import TokenModel
+from allauth.account import app_settings as allauth_settings
+from dj_rest_auth.app_settings import create_token
+from allauth.account.utils import complete_signup, send_email_confirmation
 from allauth.account.views import ConfirmEmailView
 from allauth.account.models import EmailAddress
+from dj_rest_auth.registration.views import RegisterView
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
@@ -120,6 +125,41 @@ class ProductViewSet(APIView):
         new_product.save()
         serializer = ProductSerializer(new_product)
         return Response(serializer.data)
+
+
+class CustomRegistrationView(RegisterView):
+    serializer_class = CustomRegisterSerializer
+    token_model = TokenModel
+    template_name = "email_confirmation/confirm.html"
+
+    def get_response_data(self, user):
+        return super().get_response_data(user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        data = request.data
+        try:
+            UserAccount.objects.get(email=data["email"])
+            return Response({"Error": "Email already used"}, status=400)
+        except UserAccount.DoesNotExist:
+            pass
+        try:
+            Shop.objects.get(shop_name=data["shop"]["shop_name"])
+            return Response({"Error": "Shop name already exists"}, status=400)
+        except Shop.DoesNotExist:
+            pass
+
+        if serializer.is_valid():
+            user = serializer.save(request)
+            create_token(self.token_model, user, serializer)
+            complete_signup(request, user, allauth_settings.EMAIL_VERIFICATION, None)
+            send_email_confirmation(request, user)
+            token = self.token_model.objects.get(user=user)
+            data = serializer.data
+            data["token"] = token.key
+            return Response(data, status=201)
+        else:
+            return Response(serializer.errors, status=204)
 
 
 class ProductDetailView(APIView):
