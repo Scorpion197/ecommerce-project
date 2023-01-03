@@ -5,9 +5,8 @@ import axios from "axios";
 export const getOrder = createAsyncThunk(
   "eCommerceApp/order/getOrder",
   async (orderId) => {
-    const response = await axios.get(`/api/ecommerce/orders/${orderId}`);
-    const data = await response.data;
-
+    const data = await API.fetchOneOrder(orderId);
+    console.log("data: ", data);
     return data === undefined ? null : data;
   }
 );

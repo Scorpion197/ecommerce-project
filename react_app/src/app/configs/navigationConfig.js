@@ -1012,7 +1012,7 @@ const navigationConfig = [
         title: "Confirm Email",
         type: "item",
         url: "confirm-email",
-        auth: authRoles.onlyGuest,
+        auth: authRoles.admin,
       },
       {
         id: "register",

@@ -315,7 +315,9 @@ function SignUpPage() {
               sx={{
                 width: "50%",
                 height: "45px",
-                marginBottom: "10px",
+                marginBottom: "5px",
+                paddingBottom: "-10px",
+                paddingTop: "2px",
               }}
             >
               <MenuItem value={"ONE_MONTH"}>1 month</MenuItem>
