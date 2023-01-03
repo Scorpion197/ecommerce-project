@@ -40,7 +40,7 @@ class ProductViewSet(APIView):
     def get(self, request, *args, **kwargs):
         token = request.headers["Authorization"].replace("Token", "").replace(" ", "")
         shop = Shop.objects.get(owner__auth_token__key=token)
-        products = Product.objects.filter(shop=shop)
+        products = Product.objects.filter(shop=shop, is_deleted=False)
         response_data = []
         for product in products:
             product_images = ProductImage.objects.filter(product=product)
@@ -250,6 +250,17 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated]
+
+    def destroy(self, request, *args, **kwargs):
+        pk = kwargs["pk"]
+        category_object = Category.objects.get(pk=pk)
+        related_products = Product.objects.filter(category=pk)
+        for product in related_products:
+            product.is_deleted = True
+            product.save()
+
+        category_object.delete()
+        return Response({"status": "done"}, status=200)
 
 
 class VendorsViewSet(viewsets.ModelViewSet):

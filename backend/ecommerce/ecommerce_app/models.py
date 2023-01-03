@@ -5,10 +5,10 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserM
 from django.utils import timezone
 from django.core.validators import RegexValidator
 from enum import Enum
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from safedelete.models import SafeDeleteModel
-from safedelete.models import HARD_DELETE_NOCASCADE
+from safedelete.models import SOFT_DELETE
 import uuid
 
 num_regex = RegexValidator(r"^[0-9]*$", "only numbers are allowed")
@@ -104,7 +104,7 @@ class SizeChoices(Enum):
 
 
 class Shop(SafeDeleteModel):
-    _safedelete_policy = HARD_DELETE_NOCASCADE
+    _safedelete_policy = SOFT_DELETE
     shop_name = models.CharField(max_length=20, default="", null=True, blank=True)
     owner = models.OneToOneField(
         UserAccount,
@@ -120,16 +120,26 @@ class Shop(SafeDeleteModel):
 
 
 class Category(SafeDeleteModel):
-    _safedelete_policy = HARD_DELETE_NOCASCADE
+    _safedelete_policy = SOFT_DELETE
     name = models.CharField(max_length=200, blank=True, default="", null=True)
+    products = models.CharField(max_length=200, blank=True, default="", null=True)
 
     def __str__(self) -> str:
         return self.name
 
 
+class SubscriptionType(SafeDeleteModel):
+    _safedelete_policy = SOFT_DELETE
+    duration = models.CharField(max_length=20, default="", blank=True, null=True)
+    price = models.PositiveIntegerField(default=0, null=True, blank=True)
+
+    def __str__(self) -> str:
+        return self.duration
+
+
 class Product(SafeDeleteModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    _safedelete_policy = HARD_DELETE_NOCASCADE
+    _safedelete_policy = SOFT_DELETE
     name = models.CharField(max_length=200, blank=True, null=True, default="")
     price = models.IntegerField(default=0)
     size = models.CharField(
@@ -138,6 +148,7 @@ class Product(SafeDeleteModel):
         default=SizeChoices.SMALL.value,
     )
 
+    is_deleted = models.BooleanField(default=False, null=True, blank=True)
     color = models.CharField(max_length=20, blank=True, null=True, default="")
     quantity = models.IntegerField(default=0, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now(), blank=True, null=True)
@@ -153,7 +164,7 @@ class Product(SafeDeleteModel):
 
 
 class ProductImage(SafeDeleteModel):
-    _safedelete_policy = HARD_DELETE_NOCASCADE
+    _safedelete_policy = SOFT_DELETE
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, null=True, default=None, to_field="id"
     )
@@ -173,10 +184,11 @@ class SubscriptionStatus(Enum):
     pending = "pending"
     running = "running"
     expired = "expired"
+    finished = "finished"
 
 
 class Subscription(SafeDeleteModel):
-    _safedelete_policy = HARD_DELETE_NOCASCADE
+    _safedelete_policy = SOFT_DELETE
     created_at = models.DateTimeField(default=datetime.now(), null=True, blank=True)
     duration = models.CharField(
         max_length=15,
@@ -205,7 +217,7 @@ class OrderStatus(Enum):
 
 
 class Order(SafeDeleteModel):
-    _safedelete_policy = HARD_DELETE_NOCASCADE
+    _safedelete_policy = SOFT_DELETE
     created_at = models.DateTimeField(default=timezone.now(), null=True, blank=True)
     status = models.CharField(
         max_length=10,
