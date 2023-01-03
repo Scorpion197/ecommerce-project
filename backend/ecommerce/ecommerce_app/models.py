@@ -46,7 +46,7 @@ class UserAccountManager(BaseUserManager):
 
         user_email = self.normalize_email(email)
         user = self.model(email=user_email)
-        user.user_type = "admin"
+        user.user_type = "ADMIN"
         user.phone = phone
         user.is_staff = True
         user.is_superuser = True

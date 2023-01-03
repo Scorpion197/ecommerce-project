@@ -6,7 +6,7 @@ import SignIn from "./pages/Signin";
 import Subscriptions from "./pages/Subscriptions";
 import SecuredRoute from "./pages/SecuredRoutes/SecuredRoute";
 import Vendors from "./pages/Vendors";
-
+import Signup from "./pages/Signup";
 const LayoutVendors = () => {
   return (
     <Layout>
@@ -38,6 +38,9 @@ function App() {
         <Switch>
           <Route exact path="/sign-in">
             <SignIn />
+          </Route>
+          <Route exact path="/sign-up">
+            <Signup />
           </Route>
 
           <SecuredRoute path="/" component={LayoutHome} />

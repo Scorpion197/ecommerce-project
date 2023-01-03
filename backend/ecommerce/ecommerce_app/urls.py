@@ -85,6 +85,7 @@ urlpatterns = [
     path(
         "confirm-reset-code/", ConfirmResetCodeView.as_view(), name="confirm_reset_code"
     ),
+    path("create-admin/", AdminCreationView.as_view(), name="create_admin"),
 ]
 
 urlpatterns += router.urls

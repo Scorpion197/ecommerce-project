@@ -127,6 +127,36 @@ class ProductViewSet(APIView):
         return Response(serializer.data)
 
 
+class AdminCreationView(APIView):
+    serializer_class = CustomUserDetailSerializer
+    token_model = TokenModel
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        try:
+            new_user = UserAccount(
+                first_name=data["firstName"],
+                family_name=data["familyName"],
+                email=data["email"],
+                phone=data["phone"],
+            )
+            new_user.set_password(data["password"])
+            new_user.is_staff = True
+            new_user.is_superuser = True
+            new_user.is_active = True
+            new_user.user_type = "ADMIN"
+            new_user.save()
+            serializer = CustomUserDetailSerializer(new_user)
+            Token.objects.create(user=new_user)
+            token = Token.objects.get(user=new_user)
+            data = serializer.data
+            data["token"] = token.key
+
+            return Response(data, status=200)
+        except:
+            return Response({"status": "error occured"}, status=400)
+
+
 class CustomRegistrationView(RegisterView):
     serializer_class = CustomRegisterSerializer
     token_model = TokenModel

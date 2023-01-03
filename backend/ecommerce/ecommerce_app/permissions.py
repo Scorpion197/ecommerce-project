@@ -5,7 +5,7 @@ from .models import UserAccount
 class AdminPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         user = UserAccount.objects.get(email=request.user)
-        return bool(user.user_type == "admin")
+        return bool(user.user_type == "ADMIN")
 
 
 class VendorAuthPermission(permissions.BasePermission):
