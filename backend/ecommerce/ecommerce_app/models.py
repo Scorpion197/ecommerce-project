@@ -130,11 +130,18 @@ class Category(SafeDeleteModel):
 
 class SubscriptionType(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
-    duration = models.CharField(max_length=20, default="", blank=True, null=True)
+    duration = models.PositiveIntegerField(default=0, blank=True, null=True)
     price = models.PositiveIntegerField(default=0, null=True, blank=True)
 
+    def get_subscription(self) -> str:
+        return f"{self.duration} months ({str(self.price)})"
+
+
+class Color(SafeDeleteModel):
+    name = models.CharField(default="", max_length=20, blank=True, null=True)
+
     def __str__(self) -> str:
-        return self.duration
+        return self.name
 
 
 class Product(SafeDeleteModel):
@@ -149,7 +156,9 @@ class Product(SafeDeleteModel):
     )
 
     is_deleted = models.BooleanField(default=False, null=True, blank=True)
-    color = models.CharField(max_length=20, blank=True, null=True, default="")
+    color = models.ForeignKey(
+        Color, null=True, blank=True, on_delete=models.CASCADE, default=None
+    )
     quantity = models.IntegerField(default=0, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now(), blank=True, null=True)
     category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE)
@@ -208,6 +217,15 @@ class Subscription(SafeDeleteModel):
         max_length=15,
         choices=[(stat.name, stat.value) for stat in SubscriptionStatus],
         default=SubscriptionStatus.expired.value,
+    )
+
+    subscription_type = models.ForeignKey(
+        SubscriptionType,
+        null=True,
+        blank=True,
+        default=None,
+        on_delete=models.CASCADE,
+        to_field="id",
     )
 
 

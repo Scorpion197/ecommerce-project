@@ -29,6 +29,11 @@ router.register("orders", OrderViewSet, basename="manage_orders")
 router.register("subscriptions", SubscriptionViewSet, basename="manage_subscriptions")
 router.register("categories", CategoryViewSet, basename="manage_categories")
 router.register("vendors", VendorsViewSet, basename="manage_vendors")
+router.register("colors", ColorViewSet, basename="manage_colors")
+router.register(
+    "subscriptionlist", ListSubscriptionType, basename="manage_subscription_types"
+)
+
 # Auth routes
 urlpatterns = [
     path("register/", CustomRegistrationView.as_view()),
@@ -86,6 +91,7 @@ urlpatterns = [
         "confirm-reset-code/", ConfirmResetCodeView.as_view(), name="confirm_reset_code"
     ),
     path("create-admin/", AdminCreationView.as_view(), name="create_admin"),
+    path("add-subscription/", AddSubscriptionType.as_view(), name="add_subscription"),
 ]
 
 urlpatterns += router.urls

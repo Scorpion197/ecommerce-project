@@ -127,6 +127,33 @@ class ProductViewSet(APIView):
         return Response(serializer.data)
 
 
+class ListSubscriptionType(viewsets.ViewSet):
+
+    permission_classes = [AllowAny]
+
+    def list(self, request):
+        queryset = SubscriptionType.objects.all()
+        serializer = SubscriptionTypesSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class AddSubscriptionType(APIView):
+    permission_classes = [AdminPermission]
+
+    def post(self, request, *args, **kwargs):
+        serializer = SubscriptionTypesSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
+
+
+class ColorViewSet(viewsets.ModelViewSet):
+    permission_classes = [AdminPermission, IsAuthenticated]
+    serializer_class = ColorSerializer
+    queryset = Color.objects.all()
+
+
 class AdminCreationView(APIView):
     serializer_class = CustomUserDetailSerializer
     token_model = TokenModel
@@ -177,10 +204,21 @@ class CustomRegistrationView(RegisterView):
             return Response({"Error": "Shop name already exists"}, status=400)
         except Shop.DoesNotExist:
             pass
-
         if serializer.is_valid():
             user = serializer.save(request)
             create_token(self.token_model, user, serializer)
+            Shop.objects.create(owner=user, shop_name=data["shop"]["shop_name"])
+            subscription_instance = SubscriptionType.objects.get(
+                id=data["subscription"]["id"]
+            )
+            Subscription.objects.create(
+                owner=user,
+                status=SubscriptionStatus.pending.value,
+                created_at=utc.localize(datetime.now()),
+                expires_at=None,
+                subscription_type=subscription_instance,
+            )
+
             complete_signup(request, user, allauth_settings.EMAIL_VERIFICATION, None)
             send_email_confirmation(request, user)
             token = self.token_model.objects.get(user=user)

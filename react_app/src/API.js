@@ -194,6 +194,24 @@ const API = {
     const response = await (await fetch(endpoint, requestConfig)).json();
     return response;
   },
+
+  fetchColors: async () => {
+    const token = localStorage.getItem("token");
+    const endpoint = API_URL + "/colors/";
+    const requestConfig = {
+      headers: {
+        Authorization: "Token " + token,
+      },
+    };
+    const response = await (await fetch(endpoint, requestConfig)).json();
+    return response;
+  },
+
+  fetchSubscriptionTypes: async () => {
+    const endpoint = API_URL + "/subscriptionlist/";
+    const response = await (await fetch(endpoint)).json();
+    return response;
+  },
 };
 
 export default API;

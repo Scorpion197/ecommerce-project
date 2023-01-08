@@ -32,6 +32,18 @@ class EmailAddressSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ColorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Color
+        fields = "__all__"
+
+
+class SubscriptionTypesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubscriptionType
+        fields = "__all__"
+
+
 class CustomUserDetailSerializer(UserDetailsSerializer):
     first_name = serializers.CharField(required=True)
     family_name = serializers.CharField(required=True)
@@ -92,29 +104,15 @@ class CustomRegisterSerializer(RegisterSerializer):
         data_dict["family_name"] = self.validated_data.get("family_name", "")
         data_dict["user_type"] = self.validated_data.get("user_type", "VENDOR")
         data_dict["phone"] = self.validated_data.get("phone", "")
-        print("PHONE", data_dict["phone"])
         data_dict["email"] = self.validated_data.get("email", "")
         data_dict["is_active"] = self.validated_data.get("is_active", True)
+        print("DATA DICT: ", data_dict)
         return data_dict
 
     def save(self, request):
 
         user = super().save(request)
         try:
-            shop = self._validated_data["shop"] or None
-            subscription = self._validated_data["subscription"] or None
-            subs_duration = subscription.get("duration")
-            name = shop.get("shop_name")
-
-            Shop.objects.create(owner=user, shop_name=name)
-
-            Subscription.objects.create(
-                owner=user,
-                duration=subs_duration,
-                status=SubscriptionStatus.pending.value,
-                created_at=utc.localize(datetime.now()),
-                expires_at=None,
-            )
 
             mail_content = "A new subscription has been requested"
             mail_subject = "New subscription"
