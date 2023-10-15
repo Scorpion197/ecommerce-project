@@ -80,16 +80,10 @@ class CustomRegisterSerializer(RegisterSerializer):
     password1 = serializers.CharField(
         write_only=True,
         required=True,
-        style={
-            "input_type": "password",
-        },
     )
     password2 = serializers.CharField(
         write_only=True,
         required=True,
-        style={
-            "input_type": "password",
-        },
     )
 
     is_active = serializers.BooleanField(default=True, allow_null=True)
@@ -110,10 +104,8 @@ class CustomRegisterSerializer(RegisterSerializer):
         return data_dict
 
     def save(self, request):
-
         user = super().save(request)
         try:
-
             mail_content = "A new subscription has been requested"
             mail_subject = "New subscription"
             # send email to admin
@@ -148,11 +140,9 @@ class CustomLoginSerializer(LoginSerializer):
     def authenticate(self, **kwargs):
         user = authenticate(self.context["request"], **kwargs)
         if user and user.set_active:
-
             if user.user_type == "ADMIN":
                 return user
             elif user.user_type == "VENDOR":
-
                 if user.subscription.status == "expired":
                     return None
                 elif utc.localize(datetime.now()) > user.subscription.expires_at:
